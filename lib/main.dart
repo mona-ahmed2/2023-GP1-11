@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:wjjhni/Screens/chatbot_screen.dart';
+import 'package:wjjhni/Screens/home_screen.dart';
 import 'package:wjjhni/Screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -13,7 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );
