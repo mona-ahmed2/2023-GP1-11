@@ -44,6 +44,10 @@ dependencies:
   google_sign_in: ^6.1.5
   bubble: ^1.2.1
   intl: ^0.18.1
+  dialogflow_flutter: ^1.0.0
+  dialog_flowtter: ^0.3.3
+  ibm_watson_assistant: ^1.2.0
+  chat_bubbles: ^1.5.0
 
 dev_dependencies:
   flutter_test:

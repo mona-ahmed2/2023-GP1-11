@@ -1,7 +1,13 @@
+// import 'dart:js_interop';
+
+import 'package:bubble/bubble.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:math' as math;
+import 'package:wjjhni/components/message.dart';
+import 'package:wjjhni/components/chatbot_service.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -10,7 +16,10 @@ class ChatbotScreen extends StatefulWidget {
   State<ChatbotScreen> createState() => _ChatbotScreenState();
 }
 
-// to get the current date
+/* -----------------------------------------
+
+      this method to get current date @ibtihalx
+--------------------------------------------*/
 String getDate() {
   initializeDateFormatting();
   var now = new DateTime.now();
@@ -21,6 +30,29 @@ String getDate() {
 
 class _ChatbotScreenState extends State<ChatbotScreen> {
   final messageControler = TextEditingController();
+  ChatbotService chat = ChatbotService();
+
+  ScrollController scrollController = ScrollController();
+  List<Message> msgs = [];
+  bool isTyping = false;
+
+/* -------------------------------------------------------------
+
+this method for sending response need to be complated  @ibtihalx
+-----------------------------------------------------------------*/
+  void response(query) async {
+    chat.createSession().then((value) => {
+          chat.sendInput(query).then((response) =>
+              {print(response?.output?.generic?[0].toJson()["text"])})
+        });
+
+    setState(() {});
+  }
+
+/* -----------------------------------------
+
+      Here is the UI of chatbot screen
+--------------------------------------------*/
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +78,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ),
             Flexible(
               child: ListView.builder(
-                  reverse: true,
-                  itemCount: 0,
-                  itemBuilder: (context, index) {}),
+                reverse: true,
+                itemCount: 0,
+                itemBuilder: (context, index) => null,
+              ),
             ),
             Divider(
               height: 3,
@@ -90,7 +123,19 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                       color: Colors.black38,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (messageControler.text.isEmpty) {
+                      print("empty message");
+                    } else {
+                      setState(() {});
+                      response(messageControler.text);
+                      messageControler.clear();
+                    }
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                  },
                 ),
               ),
             ),
