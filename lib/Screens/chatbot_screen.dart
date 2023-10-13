@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:math' as math;
 import 'package:wjjhni/components/message.dart';
 import 'package:wjjhni/components/chatbot_service.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -38,15 +39,19 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
 /* -------------------------------------------------------------
 
-this method for sending response need to be complated  @ibtihalx
+this method for sending question and receiving chatbot answer @ibtihalx
 -----------------------------------------------------------------*/
   void response(query) async {
     chat.createSession().then((value) => {
-          chat.sendInput(query).then((response) =>
-              {print(response?.output?.generic?[0].toJson()["text"])})
+          chat.sendInput(query).then((response) => {
+                setState(() {
+                  msgs.insert(
+                      1,
+                      Message(false,
+                          response?.output?.generic?[0].toJson()["text"]));
+                })
+              })
         });
-
-    setState(() {});
   }
 
 /* -----------------------------------------
@@ -76,12 +81,44 @@ this method for sending response need to be complated  @ibtihalx
                 ),
               ),
             ),
-            Flexible(
+            /* ********************************************
+            TO DO:
+            here is there is a problem the messages order is not correct 
+            i do not know why this happen
+            my messages come down the chatbot answers
+
+            *********************************************/
+            Expanded(
               child: ListView.builder(
-                reverse: true,
-                itemCount: 0,
-                itemBuilder: (context, index) => null,
-              ),
+                  controller: scrollController,
+                  shrinkWrap: true,
+                  reverse: true,
+                  itemCount: msgs.length,
+                  itemBuilder: (context, index) {
+                    // print(msgs[1].msg);
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: index == 0
+                            ? BubbleNormal(
+                                text: msgs[0].msg,
+                                isSender: true,
+                                color: Colors.blue.shade100,
+                              )
+                            // const Padding(
+                            //   padding: EdgeInsets.only(left: 16, top: 4),
+                            //   child: Align(
+                            //       alignment: Alignment.centerLeft,
+                            //       child: Text("Typing...")),
+                            // )
+
+                            : BubbleNormal(
+                                text: msgs[index].msg,
+                                isSender: msgs[index].isSender,
+                                color: msgs[index].isSender
+                                    ? Colors.blue.shade100
+                                    : Colors.grey.shade200,
+                              ));
+                  }),
             ),
             Divider(
               height: 3,
@@ -97,7 +134,7 @@ this method for sending response need to be complated  @ibtihalx
                     color: Color.fromRGBO(255, 254, 254, 1),
                   ),
                   padding: EdgeInsets.only(right: 16.0),
-                  child: TextFormField(
+                  child: TextField(
                     controller: messageControler,
                     textAlign: TextAlign.right,
                     decoration: InputDecoration(
@@ -127,9 +164,11 @@ this method for sending response need to be complated  @ibtihalx
                     if (messageControler.text.isEmpty) {
                       print("empty message");
                     } else {
-                      setState(() {});
-                      response(messageControler.text);
-                      messageControler.clear();
+                      setState(() {
+                        msgs.insert(0, Message(true, messageControler.text));
+                        response(messageControler.text);
+                        messageControler.clear();
+                      });
                     }
                     FocusScopeNode currentFocus = FocusScope.of(context);
                     if (!currentFocus.hasPrimaryFocus) {
