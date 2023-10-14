@@ -1,17 +1,6 @@
 import 'package:ibm_watson_assistant/ibm_watson_assistant.dart';
 import 'package:ibm_watson_assistant/models.dart';
 
-// void main(List<String> args) {
-//   ChatbotService chat = new ChatbotService();
-
-//   chat.createSession().then((value) => {
-//         chat
-//             .sendInput("مرتبة الشرف")
-//             .then((response) => {print(response?.output?.generic?[0].toJson())})
-//       });
-
-// }
-
 class ChatbotService {
   late IbmWatsonAssistant bot;
   late String _sessionId;

@@ -45,10 +45,8 @@ this method for sending question and receiving chatbot answer @ibtihalx
     chat.createSession().then((value) => {
           chat.sendInput(query).then((response) => {
                 setState(() {
-                  msgs.insert(
-                      1,
-                      Message(false,
-                          response?.output?.generic?[0].toJson()["text"]));
+                  msgs.add(Message(
+                      false, response?.output?.generic?[0].toJson()["text"]));
                 })
               })
         });
@@ -81,18 +79,11 @@ this method for sending question and receiving chatbot answer @ibtihalx
                 ),
               ),
             ),
-            /* ********************************************
-            TO DO:
-            here is there is a problem the messages order is not correct 
-            i do not know why this happen
-            my messages come down the chatbot answers
-
-            *********************************************/
             Expanded(
               child: ListView.builder(
                   controller: scrollController,
                   shrinkWrap: true,
-                  reverse: true,
+                  // reverse: true,
                   itemCount: msgs.length,
                   itemBuilder: (context, index) {
                     // print(msgs[1].msg);
@@ -165,7 +156,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                       print("empty message");
                     } else {
                       setState(() {
-                        msgs.insert(0, Message(true, messageControler.text));
+                        msgs.add(Message(true, messageControler.text));
                         response(messageControler.text);
                         messageControler.clear();
                       });
