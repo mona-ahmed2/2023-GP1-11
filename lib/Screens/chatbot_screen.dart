@@ -63,7 +63,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Color.fromRGBO(55, 94, 152, 1),
-        title: Text("روبوت المحادثة"),
+        title: Text("وجهنّي"),
       ),
       body: Container(
         child: Column(
@@ -119,13 +119,15 @@ this method for sending question and receiving chatbot answer @ibtihalx
               color: Color.fromRGBO(129, 154, 190, 1),
               child: ListTile(
                 title: Container(
-                  height: 36,
+                  // height: ,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     color: Color.fromRGBO(255, 254, 254, 1),
                   ),
                   padding: EdgeInsets.only(right: 16.0),
                   child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     controller: messageControler,
                     textAlign: TextAlign.right,
                     decoration: InputDecoration(
@@ -135,6 +137,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
+                      // filled: true,
                     ),
                     style: TextStyle(
                       fontSize: 16,
@@ -157,7 +160,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                     } else {
                       setState(() {
                         msgs.add(Message(true, messageControler.text));
-                        response(messageControler.text);
+                        response(messageControler.text.replaceAll("\n", " "));
                         messageControler.clear();
                       });
                     }

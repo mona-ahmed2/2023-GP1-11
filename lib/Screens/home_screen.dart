@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'chatbot_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,10 +64,12 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const ChatbotScreen()),
-                    );
+                    setState(() {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const ChatbotScreen()),
+                      );
+                    });
                   },
                 ),
               ),
