@@ -28,6 +28,7 @@ Introduction: In today's rapidly growing educational realm, academic advising is
 
 <h2>✔️Requirements To Launch The Admin websiten</h2>
 <ul>
+ <li> Here github repo for admin website https://github.com/ibtihalx/wjjhni_admin_website </li>
 <li> log in as admin  with the following  username is "" and the password is ""</li>
 </ul>
 
