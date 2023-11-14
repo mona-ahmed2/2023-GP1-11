@@ -1,6 +1,8 @@
 // import 'dart:js_interop';
 
 import 'package:bubble/bubble.dart';
+import 'dart:ui' as ui;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:math' as math;
 import 'package:wjjhni/components/message.dart';
 import 'package:wjjhni/components/chatbot_service.dart';
-import 'package:chat_bubbles/chat_bubbles.dart';
+// import 'package:chat_bubbles/chat_bubbles.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -95,6 +97,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                                 isSender: true,
                                 color: Colors.blue.shade100,
                               )
+
                             // const Padding(
                             //   padding: EdgeInsets.only(left: 16, top: 4),
                             //   child: Align(
@@ -173,6 +176,54 @@ this method for sending question and receiving chatbot answer @ibtihalx
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BubbleNormal extends StatelessWidget {
+  final String text;
+  final bool isSender;
+  final Color color;
+
+  BubbleNormal({
+    required this.text,
+    required this.isSender,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool isLongMessage = text.length > 50;
+    return Align(
+      alignment: isSender ? Alignment.topRight : Alignment.topLeft,
+      child: FractionallySizedBox(
+        widthFactor: isLongMessage ? 0.8 : null,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(isSender ? 12.0 : 0.0),
+              bottomRight: Radius.circular(isSender ? 0.0 : 12.0),
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+          padding: EdgeInsets.all(12.0),
+          child: Transform(
+            transform: Matrix4.translationValues(
+              isSender ? 4.0 : -4.0, // Adjust the value based on your design
+              0.0,
+              0.0,
+            ),
+            child: Text(
+              text,
+              textDirection: ui.TextDirection.rtl,
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
         ),
       ),
     );
