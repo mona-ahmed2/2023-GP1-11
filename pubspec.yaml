@@ -48,6 +48,8 @@ dependencies:
   dialog_flowtter: ^0.3.3
   ibm_watson_assistant: ^1.2.0
   chat_bubbles: ^1.5.0
+  booking_calendar: ^1.1.10
+  toggle_switch: ^2.1.0
 
 dev_dependencies:
   flutter_test:
