@@ -74,10 +74,15 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
         title: const Text('تحديد الاوقات'),
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        leading: IconButton(onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const AllAvailabilityHoursScreen()));
-        }, icon: Icon(Icons.edit),),
+
+        actions: [
+
+          IconButton(onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const AllAvailabilityHoursScreen()));
+          }, icon: Icon(Icons.edit),),
+        ],
+
       ),
       body: Center(
         child: Directionality(

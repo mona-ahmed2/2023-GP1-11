@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(20.0),
               child: SvgPicture.asset(
                 'assets/chat.svg',
-                height: 400,
+                height: 340,
                 width: 400,
               ),
             ),
@@ -111,10 +111,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'أبدأ المحادثة',
+                        'أبدأ المحادثة', style:TextStyle(color:Colors.white) ,
                       ),
                       SizedBox(width: 10,),
-                      Icon(Icons.chat),
+                      Icon(Icons.chat, color:Colors.white),
                     ],
                   ),
                 ),
@@ -140,10 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'الساعات المتاحة',
+                        'الساعات المتاحة', style:TextStyle(color:Colors.white) ,
                       ),
-                      SizedBox(width: 10,),
-                      Icon(Icons.more_time),
+                      SizedBox(width: 10),
+                      Icon(Icons.more_time,color:Colors.white),
                     ],
                   ),
                 ),
@@ -169,10 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'الملف الشخصي',
+                        'الملف الشخصي', style:TextStyle(color:Colors.white),
                       ),
                       SizedBox(width: 10,),
-                      Icon(Icons.person),
+                      Icon(Icons.person , color:Colors.white),
                     ],
                   ),
                 ),

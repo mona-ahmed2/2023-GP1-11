@@ -20,7 +20,7 @@ class UserModel {
     email = json['email'];
     bio = json['bio'];
     major = json['major'];
-    completedHours = json['complated_hours'];
+    completedHours = json['completed_hours'];
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -29,7 +29,7 @@ class UserModel {
     data['email'] = email;
     data['bio'] = bio;
     data['major'] = major;
-    data['complated_hours'] = completedHours;
+    data['completed_hours']= completedHours;
     return data;
   }
 }
