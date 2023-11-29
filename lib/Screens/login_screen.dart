@@ -18,6 +18,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   Future<void> loginUser() async {
     try {
+
       await auth.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,

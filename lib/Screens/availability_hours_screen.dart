@@ -58,6 +58,8 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
     return converted;
   }
 
+
+
   List<DateTimeRange> generatePauseSlots() {
     return [
       DateTimeRange(

@@ -33,7 +33,7 @@ class UserModel {
     return data;
   }
 }
-
+//model
   class AcademicAdvisorsModel {
   AcademicAdvisorsModel({
     required this.id,

@@ -70,6 +70,8 @@ class _AllAvailabilityHoursScreenState
     return converted;
   }
 
+
+
   List<DateTimeRange> generatePauseSlots() {
     return [
       DateTimeRange(

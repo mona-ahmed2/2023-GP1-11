@@ -15,7 +15,6 @@ class ChatbotScreen extends StatefulWidget {
 }
 
 /* -----------------------------------------
-
       this method to get current date @ibtihalx
 --------------------------------------------*/
 String getDate() {

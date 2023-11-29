@@ -13,6 +13,8 @@ Introduction: In today's rapidly growing educational realm, academic advising is
 <li> mobile emulator or android mobile </li>
 </ul>
 
+
+
 <h2>:memo: Launch Instructions</h2>
 <h3>💻 Launching from Visual studio/Android studio</h3>
 <ol>

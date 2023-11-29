@@ -171,6 +171,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pop();
               },
+
               icon: const Icon(Icons.logout)),
         ),
         body: isLoading
