@@ -32,7 +32,6 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
         bookingStart: DateTime(now.year, now.month, now.day, 08,));
   }
 
-
   Stream<dynamic>? getBookingStreamMock(
       {required DateTime end, required DateTime start}) {
     final  snapshot =  db.collection('AvailabilityHours').where('userId',isEqualTo: uid).snapshots();
