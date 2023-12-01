@@ -55,68 +55,76 @@ class _RestPasswordState extends State<RestPassword> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: TextDirection.ltr,
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Color.fromRGBO(55, 94, 152, 1),
-                Color.fromRGBO(255, 255, 255, 1),
-              ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "اعادة تعيين كلمة المرور",
-                  style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  "سيتم ارسال ايميل لاعادة تعيين كلمة المرور",
-                  style: TextStyle(fontSize: 16,color: Colors.white,fontWeight: FontWeight.w200),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CustomTextField(
-                    controller: emailController,
-                    hintText: 'ادخل البريد الالكتروني', textInputType: TextInputType.emailAddress, enabled:true,
+        appBar:AppBar(
+          title: Text('استعادة كلمة المرور'),
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+        ) ,
+        body: Directionality(
+          textDirection: TextDirection.rtl,
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Color.fromRGBO(55, 94, 152, 1),
+                  Color.fromRGBO(255, 255, 255, 1),
+                ], begin: Alignment.topRight, end: Alignment.bottomLeft),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "اعادة تعيين كلمة المرور",
+                    style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: ElevatedButton.icon(
-                    onPressed: () async{
-                      if (emailController.text.isNotEmpty ) {
-                        restPassword();
-                      } else {
-                        showSnackBar(context,
-                            'يرجى ادخال البريد الالكتروني',
-                        ); // Displaying the usual firebase error message
-                      }
-                    },
-                    style: ButtonStyle(
-                      alignment: Alignment.center,
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      textStyle: MaterialStateProperty.all(
-                        const TextStyle(color: Colors.white),
-                      ),
-                      minimumSize: MaterialStateProperty.all(
-                        Size(MediaQuery.of(context).size.width /1.5, 50),
-                      ),
-                    ),
-                    icon: Icon(Icons.email_outlined),
-                    label:const Text(
-                      "اعادة تعيين",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                  const Text(
+                    "سيتم ارسال ايميل لاعادة تعيين كلمة المرور",
+                    style: TextStyle(fontSize: 16,color: Colors.white,fontWeight: FontWeight.w200),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                      controller: emailController,
+                      hintText: 'ادخل البريد الالكتروني', textInputType: TextInputType.emailAddress, enabled:true,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: ElevatedButton.icon(
+                      onPressed: () async{
+                        if (emailController.text.isNotEmpty ) {
+                          restPassword();
+                        } else {
+                          showSnackBar(context,
+                              'يرجى ادخال البريد الالكتروني',
+                          ); // Displaying the usual firebase error message
+                        }
+                      },
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                        backgroundColor: MaterialStateProperty.all(Colors.blue),
+                        textStyle: MaterialStateProperty.all(
+                          const TextStyle(color: Colors.white),
+                        ),
+                        minimumSize: MaterialStateProperty.all(
+                          Size(MediaQuery.of(context).size.width /1.5, 50),
+                        ),
+                      ),
+                      icon: Icon(Icons.email_outlined),
+                      label:const Text(
+                        "اعادة تعيين",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

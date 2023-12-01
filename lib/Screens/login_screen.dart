@@ -36,7 +36,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
         error = 'كلمة المرور ضعيفة.';
       } else if (e.code == 'INVALID_LOGIN_CREDENTIALS'||e.code == 'invalid-credential') {
         print('لم يتم العثور على الحساب');
-        error = 'لم يتم العثور على الحساب';
+        error = 'يوجد خطأ في البريد الالكتروني او كلمة المرور';
       } else if (e.code == 'invalid-email' || e.code == 'wrong-password') {
         print('يوجد خطأ في البريد الالكتروني او كلمة المرور');
         error = 'يوجد خطأ في البريد الالكتروني او كلمة المرور';

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wjjhni/model/user_model.dart';
 import '../widgets/custom_textfield.dart';
-import '../widgets/showSnackbar.dart';
+import '../widgets/showSnackbar.dart';//Imports necessary packages and widgets
 
 class EmailPasswordSignup extends StatefulWidget {
   const EmailPasswordSignup({Key? key}) : super(key: key);
@@ -279,10 +279,10 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Padding(
+                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  'التخصص',
+                                 isUser?'التخصص':'القسم' ,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
