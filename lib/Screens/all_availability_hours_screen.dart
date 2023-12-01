@@ -67,6 +67,7 @@ class _AllAvailabilityHoursScreenState
           start: DateTime.parse(item['bookingStart']),
           end: DateTime.parse(item['bookingEnd'])));
     }
+
     return converted;
   }
 
@@ -81,82 +82,88 @@ class _AllAvailabilityHoursScreenState
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('جميع المواعيد'),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-      ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: StreamBuilder<dynamic>(
-            stream: getBookingStreamMock(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data != null) {
-                List<DateTimeRange> converted = [];
-                for (var i = 0; i < snapshot.data.size; i++) {
-                  final item = snapshot.data.docs[i].data();
-                  converted.add(DateTimeRange(
-                      start: DateTime.parse(item['bookingStart']),
-                      end: DateTime.parse(item['bookingEnd'])));
-                }
-                return ListView(
-                    children: converted
-                        .map((e) => 
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.black12,
-                            border: Border.all(color:const Color.fromRGBO(55, 94, 152, 1) ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 100,),
-                                  Column(
-                                    children: [
-                                      Text("التاريخ ${e.start.year}/${e.start.month}/${e.start.day}"),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(" من الساعة ${e.start.hour}"),
-                                          SizedBox(width: 10,),
-                                          Text("الى الساعة ${e.end.hour}"),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  IconButton(onPressed: ()async{
-                                    String docId='';
-                                    final FirebaseAuth auth = FirebaseAuth.instance;
-                                    final String? id = auth.currentUser?.uid;
-                                    String a = e.start.toString();
-                                    a=a.replaceFirst(' ', 'T');
-                                    print(e.start.toString());
-                                    await FirebaseFirestore.instance.collection("AvailabilityHours").where('bookingStart',isEqualTo: a).get().then((value) =>print(docId = value.docs.first.reference.id));
-                                    await FirebaseFirestore.instance.collection('AvailabilityHours').doc(docId).delete();
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('جميع المواعيد'),
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+        ),
+        body: Directionality(
+          textDirection: TextDirection.rtl,
+          child: StreamBuilder<dynamic>(
+              stream: getBookingStreamMock(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  List<DateTimeRange> converted = [];
+                  for (var i = 0; i < snapshot.data.size; i++) {
+                    final item = snapshot.data.docs[i].data();
+                    converted.add(DateTimeRange(
+                        start: DateTime.parse(item['bookingStart']),
+                        end: DateTime.parse(item['bookingEnd'])));
+                  }
+                  converted.sort((a,b) {
+                    return a.start.compareTo(b.start);
+                  });
+                  return ListView(
+                      children: converted
+                          .map((e) => 
+                          Container(
+                            margin: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.black12,
+                              border: Border.all(color:const Color.fromRGBO(55, 94, 152, 1) ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(width: 100,),
+                                    Column(
+                                      children: [
+                                        Text("التاريخ ${e.start.year}/${e.start.month}/${e.start.day}"),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(" من الساعة ${e.start.hour}"),
+                                            SizedBox(width: 10,),
+                                            Text("الى الساعة ${e.end.hour}"),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    IconButton(onPressed: ()async{
+                                      String docId='';
+                                      final FirebaseAuth auth = FirebaseAuth.instance;
+                                      final String? id = auth.currentUser?.uid;
+                                      String a = e.start.toString();
+                                      a=a.replaceFirst(' ', 'T');
+                                      print(e.start.toString());
+                                      await FirebaseFirestore.instance.collection("AvailabilityHours").where('bookingStart',isEqualTo: a).get().then((value) =>print(docId = value.docs.first.reference.id));
+                                      await FirebaseFirestore.instance.collection('AvailabilityHours').doc(docId).delete();
 
-                                  }, icon: Icon(Icons.delete_outline,color: Colors.red,)),
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                        )
-                        .toList());
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                                    }, icon: Icon(Icons.delete_outline,color: Colors.red,)),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                          )
+                          .toList());
+                } else if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Center(
+                  child: Text("لا يوحد مواعيد"),
                 );
-              }
-              return Center(
-                child: Text("لا يوحد مواعيد"),
-              );
-            }),
+              }),
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wjjhni/Screens/rest_password_screen.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/showSnackbar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -16,6 +17,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  bool isObscure = true;
   Future<void> loginUser() async {
     try {
 
@@ -26,12 +28,13 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
       setState(() {
       });
     } on FirebaseAuthException catch (e) {
+      print(e.code.toString());
       String error;
       print(e.code);
       if (e.code == 'weak-password') {
         print('كلمة المرور ضعيفة.');
         error = 'كلمة المرور ضعيفة.';
-      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS'||e.code == 'invalid-credential') {
         print('لم يتم العثور على الحساب');
         error = 'لم يتم العثور على الحساب';
       } else if (e.code == 'invalid-email' || e.code == 'wrong-password') {
@@ -44,8 +47,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
           context, error); // Displaying the usual firebase error message
     }
   }
-  bool IsCheck1 =false ;
-  bool IsCheck2 =false ;
+  int i=0;
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -77,12 +79,16 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                       animate: true,
                       animationDuration: 400,
                       minWidth: 130,
-                      initialLabelIndex: 0,
+                      initialLabelIndex: i,
                       totalSwitches: 2,
                       inactiveBgColor: Color.fromRGBO(55, 94, 152, 1),
                       inactiveFgColor: Colors.white,
                       labels: const ['مرشد اكاديمي', 'طالب'],
-                      onToggle: (index) {},
+                      onToggle: (index) {
+                        i = index!;
+                        setState(() {
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -97,25 +103,58 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                 const SizedBox(height: 20),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CustomTextField(
+                  child: TextField(
+                    enabled: true,
+                    obscureText: isObscure,
+                    keyboardType:TextInputType.visiblePassword,
                     controller: passwordController,
-                    hintText: 'ادخل كلمة المرور', textInputType: TextInputType.visiblePassword, enabled: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.transparent, width: 0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.transparent, width: 0),
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          isObscure = !isObscure;
+                          setState(() {
+                          });
+                        },
+                        child: Icon(
+                          isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: const Color(0xFF14386E),
+                        ),
+                      ),
+                      contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      filled: true,
+                      fillColor: const Color(0xffF5F6FA),
+                      hintText:'ادخل كلمة المرور',
+                      hintStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
                 ),
-                // Row(
-                //   children: [
-                //     SizedBox(
-                //       width: 40,
-                //     ),
-                //     Text('لم تقم بالتسجيل بعد؟'),
-                //     TextButton(
-                //         onPressed: () {
-                //           Navigator.of(context).push(
-                //               MaterialPageRoute(builder: (_) => EmailPasswordSignup()));
-                //         },
-                //         child: Text('انشاء حساب'))
-                //   ],
-                // ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 40,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => RestPassword()));
+                        },
+                        child: Text('هل نسيت كلمة المرور؟'))
+                  ],
+                ),
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () {
