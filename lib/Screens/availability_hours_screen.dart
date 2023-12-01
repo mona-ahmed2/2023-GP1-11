@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
 
+import '../widgets/showSnackbar.dart';
 import 'all_availability_hours_screen.dart';
 
 
@@ -46,6 +47,7 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
     if (kDebugMode) {
       print('${a.toString()} has been uploaded');
     }
+    showSnackBar(context,'تم حجز الموعد بنجاح');
   }
   List<DateTimeRange> convertStreamResultMock({required dynamic streamResult}) {
     List<DateTimeRange> converted = [];
@@ -70,41 +72,35 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('تحديد الاوقات'),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-
-        actions: [
-
-          IconButton(onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const AllAvailabilityHoursScreen()));
-          }, icon: Icon(Icons.edit),),
-        ],
-
-      ),
-      body: Center(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: BookingCalendar(
-            availableSlotText: 'المتوفر',
-            selectedSlotText: 'المحدد',
-            bookedSlotText: 'المختار',
-            disabledDays: const [5,6],          //friday+satrday
-            bookingService: mockBookingService,
-            convertStreamResultToDateTimeRanges: convertStreamResultMock,
-            getBookingStream: getBookingStreamMock,
-            uploadBooking: uploadBookingMock,
-            hideBreakTime: true,
-            loadingWidget: const Text('جاري الحصول على المعلومات ...'),
-            uploadingWidget: const CircularProgressIndicator(),
-            locale: 'ar',
-            startingDayOfWeek: StartingDayOfWeek.sunday,
-            bookingButtonText: 'اختيار',
-            wholeDayIsBookedWidget:
-            const Text('تم اختيار جميع الاوقات من 08:00 الى 18:00'),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('تحديد الاوقات'),
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+        ),
+        body: Center(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: BookingCalendar(
+              availableSlotText: 'المتوفر',
+              selectedSlotText: 'المحدد',
+              bookedSlotText: 'المختار',
+              disabledDays: const [5,6],          //friday+satrday
+              bookingService: mockBookingService,
+              convertStreamResultToDateTimeRanges: convertStreamResultMock,
+              getBookingStream: getBookingStreamMock,
+              uploadBooking: uploadBookingMock,
+              hideBreakTime: true,
+              loadingWidget: const Text('جاري الحصول على المعلومات ...'),
+              uploadingWidget: const CircularProgressIndicator(),
+              locale: 'ar',
+              startingDayOfWeek: StartingDayOfWeek.sunday,
+              bookingButtonText: 'اختيار',
+              wholeDayIsBookedWidget:
+              const Text('تم اختيار جميع الاوقات من 08:00 الى 18:00'),
+            ),
           ),
         ),
       ),
