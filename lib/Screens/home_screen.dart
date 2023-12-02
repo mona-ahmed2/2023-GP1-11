@@ -1,3 +1,4 @@
+//import packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:wjjhni/Screens/splash_screen.dart';
 import 'availability_hours_screen.dart';
 import 'availabilty_home_screen.dart';
 import 'chatbot_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

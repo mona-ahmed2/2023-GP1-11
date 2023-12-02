@@ -1,9 +1,11 @@
+//import packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
 
+//class by Esraa Alhasan
 class AllAvailabilityHoursScreen extends StatefulWidget {
   const AllAvailabilityHoursScreen({Key? key}) : super(key: key);
 
@@ -11,6 +13,7 @@ class AllAvailabilityHoursScreen extends StatefulWidget {
   State<AllAvailabilityHoursScreen> createState() =>
       _AllAvailabilityHoursScreenState();
 }
+
 
 class _AllAvailabilityHoursScreenState
     extends State<AllAvailabilityHoursScreen> {
@@ -26,7 +29,7 @@ class _AllAvailabilityHoursScreenState
     mockBookingService = BookingService(
         userId: uid,
         serviceName: '',
-        serviceDuration: 60,
+        serviceDuration: 60,//duration 60min
         bookingEnd: DateTime(
           now.year,
           now.month,
@@ -42,13 +45,14 @@ class _AllAvailabilityHoursScreenState
   }
 
   Stream<dynamic>? getBookingStreamMock() {
-    final snapshot = db
+    final snapshot = db //getting from the firebase database
         .collection('AvailabilityHours')
         .where('userId', isEqualTo: uid)
         .snapshots();
     return snapshot;
   }
 
+  //to show all reserved appointments
   Future<dynamic> uploadBookingMock(
       {required BookingService newBooking}) async {
     Map<String, dynamic> a = newBooking.toJson();
@@ -58,6 +62,7 @@ class _AllAvailabilityHoursScreenState
       print('${a.toString()} has been uploaded');
     }
   }
+
 
   List<DateTimeRange> convertStreamResultMock({required dynamic streamResult}) {
     List<DateTimeRange> converted = [];
@@ -72,7 +77,7 @@ class _AllAvailabilityHoursScreenState
   }
 
 
-
+//Design
   List<DateTimeRange> generatePauseSlots() {
     return [
       DateTimeRange(
@@ -86,7 +91,7 @@ class _AllAvailabilityHoursScreenState
       textDirection: TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('جميع المواعيد'),
+          title: const Text('جميع المواعيد'),//Title
           centerTitle: true,
           backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
         ),
@@ -124,11 +129,11 @@ class _AllAvailabilityHoursScreenState
                                     SizedBox(width: 100,),
                                     Column(
                                       children: [
-                                        Text("التاريخ ${e.start.year}/${e.start.month}/${e.start.day}"),
+                                        Text("التاريخ ${e.start.year}/${e.start.month}/${e.start.day}"), //shows in order of the dates
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Text(" من الساعة ${e.start.hour}"),
+                                            Text(" من الساعة ${e.start.hour}"),//mention the hours chosen
                                             SizedBox(width: 10,),
                                             Text("الى الساعة ${e.end.hour}"),
                                           ],
@@ -146,7 +151,7 @@ class _AllAvailabilityHoursScreenState
                                       await FirebaseFirestore.instance.collection("AvailabilityHours").where('bookingStart',isEqualTo: a).get().then((value) =>print(docId = value.docs.first.reference.id));
                                       await FirebaseFirestore.instance.collection('AvailabilityHours').doc(docId).delete();
 
-                                    }, icon: Icon(Icons.delete_outline,color: Colors.red,)),
+                                    }, icon: Icon(Icons.delete_outline,color: Colors.red,)),//trashIcon for deleting
                                   ],
                                 )
                               ],
@@ -160,7 +165,7 @@ class _AllAvailabilityHoursScreenState
                   );
                 }
                 return Center(
-                  child: Text("لا يوحد مواعيد"),
+                  child: Text("لا يوحد مواعيد"),//none of the times lots has been chosen
                 );
               }),
         ),

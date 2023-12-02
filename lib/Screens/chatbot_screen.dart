@@ -1,3 +1,4 @@
+//import packages
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:math' as math;
 import 'package:wjjhni/components/message.dart';
 import 'package:wjjhni/components/chatbot_service.dart';
+
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
