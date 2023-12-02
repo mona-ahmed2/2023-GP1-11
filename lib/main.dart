@@ -8,30 +8,30 @@ import 'Screens/login_screen.dart';
 
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();//flutter binding is initialized for async operations
+  await initializeDateFormatting();//initializes date formatting
+  await Firebase.initializeApp();//initializes the Firebase
+  runApp(const MyApp());//run the app
 }
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {//main application
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.userChanges(),
+      home: StreamBuilder<User?>(//user interfaces in response to changes in the authentication state
+        stream: FirebaseAuth.instance.userChanges(),// method to listen to changes in the user authentication state
         builder: (context, snapshot) {
           if(snapshot.hasData && snapshot.data!=null){
-           //FirebaseAuth.instance.signOut();
-          return const HomeScreen();
+
+          return const HomeScreen();//home screen if the user is authenticated
           }else if(snapshot.connectionState == ConnectionState.waiting){
-            return const SplashScreen();
+            return const SplashScreen();//splash screen while the app is waiting
         }
-          return const EmailPasswordLogin();
+          return const EmailPasswordLogin();//login screen if the user is not authenticated
         }
       ),
     );

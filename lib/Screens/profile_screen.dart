@@ -25,7 +25,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
   final FirebaseFirestore db = FirebaseFirestore.instance;
   late bool isUser = false;
   late bool isLoading = true;
-  createUser() async {
+  createUser() async {//async fetches user data from firestore by using uid
     var userData;
     final String? id = auth.currentUser?.uid;
     print(id);
@@ -75,7 +75,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
     }
   }
 
-  Future<void> update() async {
+  Future<void> update() async {//Async update user data in firestore based on the user role
     isLoading = true;
     setState(() {});
     try {
@@ -119,7 +119,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
       await createUser();
       showSnackBar(context, 'تم تحديث البيانات بنجاح');
     } on FirebaseAuthException catch (e) {
-      // if you want to display your own custom error message
+      //  display custom error message
       String error;
       if (e.code == 'weak-password') {
         if (kDebugMode) {
@@ -160,9 +160,9 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
             centerTitle: true,
             backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
             title: const Text("الملف الشخصي"),
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: true,//back
         ),
-        body: isLoading
+        body: isLoading//loading indicator
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -177,35 +177,13 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                       Color.fromRGBO(255, 255, 255, 1),
                     ], begin: Alignment.topRight, end: Alignment.bottomLeft),
                   ),
-                  child: SingleChildScrollView(
+                  child: SingleChildScrollView(// Allow scrolling if the content overflows
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1),
-                        // Container(
-                        //   width: double.infinity,
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white,
-                        //     borderRadius: BorderRadius.circular(10)
-                        //   ),
-                        //   margin: const EdgeInsets.symmetric(horizontal: 20),
-                        //   child: DropdownMenu<String>(
-                        //     width:MediaQuery.of(context).size.width-40,
-                        //     hintText:'نوع الحساب',
-                        //     onSelected: (val){
-                        //       role =val!;
-                        //       print(role);
-                        //       setState(() {
-                        //       });
-                        //     },
-                        //     dropdownMenuEntries: [
-                        //       DropdownMenuEntry(value: 'مرشد اكاديمي', label: 'مرشد اكاديمي'),
-                        //       DropdownMenuEntry(value: 'طالب', label: 'طالب'),
-                        //     ],
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 20),
+
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
@@ -225,7 +203,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                                 controller: nameController,
                                 hintText: 'الاسم',
                                 textInputType: TextInputType.text,
-                                enabled: false,
+                                enabled: false,//cannot change
                               ),
                             ],
                           ),
@@ -255,24 +233,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                             ],
                           ),
                         ),
-                        // const SizedBox(height: 20),
-                        // Container(
-                        //   margin: const EdgeInsets.symmetric(horizontal: 20),
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Padding(
-                        //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        //         child: Text('كلمة المرور',style: TextStyle(fontSize: 16,color: Colors.white,fontWeight: FontWeight.w400),),
-                        //       ),
-                        //       CustomTextField(
-                        //         controller: passwordController,
-                        //         hintText: 'ادخل كلمة السر',
-                        //         textInputType: TextInputType.visiblePassword,
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
+
                         const SizedBox(height: 20),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -323,19 +284,6 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
                             ],
                           ),
                         ),
-                        // Row(
-                        //   children: [
-                        //     SizedBox(
-                        //       width: 40,
-                        //     ),
-                        //     Text('لديك حساب؟'),
-                        //     TextButton(
-                        //         onPressed: () {
-                        //           Navigator.of(context).pop();
-                        //         },
-                        //         child: Text('قم بتسجيل الدخول'))
-                        //   ],
-                        // ),
                         const SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {

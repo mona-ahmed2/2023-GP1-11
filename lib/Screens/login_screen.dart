@@ -5,20 +5,20 @@ import '../widgets/custom_textfield.dart';
 import '../widgets/showSnackbar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class EmailPasswordLogin extends StatefulWidget {
+class EmailPasswordLogin extends StatefulWidget {//represent the login screen
   static String routeName = '/login-email-password';
-  const EmailPasswordLogin({Key? key}) : super(key: key);
+  const EmailPasswordLogin({Key? key}) : super(key: key);//constructor
 
   @override
   _EmailPasswordLoginState createState() => _EmailPasswordLoginState();
 }
 
-class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class _EmailPasswordLoginState extends State<EmailPasswordLogin> {//the class for the EmailPasswordLogin widget
+  final TextEditingController emailController = TextEditingController();// controller for handling the input of the email field
+  final TextEditingController passwordController = TextEditingController();//controller for handling the input of the password field
   final FirebaseAuth auth = FirebaseAuth.instance;
-  bool isObscure = true;
-  Future<void> loginUser() async {
+  bool isObscure = true;//the password text is obscured
+  Future<void> loginUser() async {//async method for handling user login by using firebase auth
     try {
 
       await auth.signInWithEmailAndPassword(
@@ -27,7 +27,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
       );
       setState(() {
       });
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {// handles exceptions
       print(e.code.toString());
       String error;
       print(e.code);
@@ -47,9 +47,9 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
           context, error); // Displaying the usual firebase error message
     }
   }
-  int i=0;
+  int i=0;// initial index for the toggle switch
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //override the method to define the interface for the login screen
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

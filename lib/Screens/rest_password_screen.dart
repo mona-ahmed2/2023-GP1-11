@@ -15,13 +15,13 @@ class RestPassword extends StatefulWidget {
 class _RestPasswordState extends State<RestPassword> {
   final TextEditingController emailController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
-  Future<void> restPassword() async {
+  Future<void> restPassword() async {//shows a loading dialog
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context)=>const Center(child: CircularProgressIndicator(),));
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);//the message
       showSnackBar(context,'تم ارسال الايميل بنجاح');
       Navigator.of(context).pop();
       Navigator.of(context).pop();
@@ -50,7 +50,7 @@ class _RestPasswordState extends State<RestPassword> {
   @override
   void dispose() {
    emailController.dispose();
-    super.dispose();
+    super.dispose();//free resources
   }
   @override
   Widget build(BuildContext context) {
