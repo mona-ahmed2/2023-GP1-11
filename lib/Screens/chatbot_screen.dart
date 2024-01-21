@@ -55,13 +55,8 @@ this method for sending question and receiving chatbot answer @ibtihalx
 --------------------------------------------*/
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        title: const Text("وجهنّي"),
-      ),
-      body: Column(
+    
+    return Column(
         children: [
           Center(
             child: Container(
@@ -171,8 +166,8 @@ this method for sending question and receiving chatbot answer @ibtihalx
             ),
           ),
         ],
-      ),
-    );
+      );
+    
   }
 }
 
