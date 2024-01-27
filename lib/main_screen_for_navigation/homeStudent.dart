@@ -1,4 +1,4 @@
-import 'package:wjjhni/Screens/chatbot_screen.dart';
+import 'package:wjjhni/Chatbot/chatbot_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wjjhni/widgets/home_widget.dart';
 import '../widgets_to_be_implemented/more.dart';
@@ -17,7 +17,7 @@ class _HomePageStuState extends State<HomePageStu> {
   int _selecetedIndex = 3;
   final List<String> _titles = const ['المزيد', 'مرشدتي', 'أسأل', 'الرئيسية'];
 
-  final List<Widget> _tabs =  [
+   List<Widget> _tabs =  [
     MoreScreen(isAdvisor: false,isStudent: true,),
     MyAdvisor(),
     ChatbotScreen() ,

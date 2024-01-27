@@ -29,7 +29,7 @@ class MoreScreen extends StatelessWidget {
     Icons.calculate,
   ];
 
-  static final List<Widget> links = [
+   List<Widget> links = [
     PlanScreen(),
     AcadFormsScreen(),
     ImportantDatesScreen(),

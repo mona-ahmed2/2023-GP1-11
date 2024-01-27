@@ -1,6 +1,6 @@
 
 import 'package:wjjhni/widgets/home_widget.dart';
-import 'package:wjjhni/widgets_to_be_implemented/chat_widget.dart';
+import 'package:wjjhni/onlineChatting/chat_widget.dart';
 import '../widgets_to_be_implemented/academic_appointments.dart';
 import '../widgets_to_be_implemented/more.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +16,14 @@ class HomePageAdvisor extends StatefulWidget {
 
 class _HomePageAdvisorState extends State<HomePageAdvisor> {
   int _selecetedIndex = 3;
-  final List<String> _titles = const [
+   List<String> _titles = const [
     'المزيد',
     'المواعيد',
     'طالباتي',
     'الرئيسية'
   ];
   bool isAdvisor = true;
-  final List<Widget> _tabs = [
+   List<Widget> _tabs = [
     MoreScreen(isAdvisor:true, isStudent:false),
     AcademicAppo(), //replace with chat with my students
     ChatWidget(), //replace with appointments

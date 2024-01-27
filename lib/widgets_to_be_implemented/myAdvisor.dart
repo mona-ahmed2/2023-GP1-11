@@ -1,5 +1,5 @@
 import 'package:wjjhni/Screens_to_be_implemented/all_appointments.dart';
-import 'package:wjjhni/Screens_to_be_implemented/chat_screen.dart';
+import 'package:wjjhni/onlineChatting/chat_screen.dart';
 import 'package:wjjhni/Screens_to_be_implemented/book_appointment_screen.dart';
 import 'package:wjjhni/Screens_to_be_implemented/rate_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _MyAdvisorState extends State<MyAdvisor> {
     Icons.calendar_month,
     Icons.stars,
   ];
-  static final List<Widget> links = [
+  List<Widget> links = [
     ChatScreen(),
     BooKAppointment(),
     AllAppointments(),
