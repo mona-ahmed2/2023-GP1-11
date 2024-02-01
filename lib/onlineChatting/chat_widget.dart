@@ -1,10 +1,30 @@
-// import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:flutter/material.dart';
+import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 import 'package:wjjhni/onlineChatting/chat_tile.dart';
-import '../widgets/search_bar.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+String uid = FirebaseAuth.instance.currentUser!.uid;
+final db = FirebaseFirestore.instance;
+ScrollController scrollController = ScrollController();
+List<String> names = [];
+List<String> searchResults = [];
+//function to get names from DB
+void getNames() async {
+  await for (var snapshot in db
+      .collection("students")
+      .where('AdvisorUID', isEqualTo: uid)
+      .snapshots()) {
+    for (var student in snapshot.docs) {
+      if (!name.contains(student.get("name"))) {
+        names.add(student.get("name"));
+      }
+    }
+  }
+  searchResults = names;
+}
 
 class ChatWidget extends StatefulWidget {
   const ChatWidget({super.key});
@@ -14,30 +34,22 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  String uid = FirebaseAuth.instance.currentUser!.uid;
-  final db = FirebaseFirestore.instance;
-  Stream<dynamic>? getStudentsStream() {
-    final snapshot = db //getting from the firebase database
-        .collection('students')
-        .where('advisor_uid', isEqualTo: uid)
-        .snapshots();
-    return snapshot;
+  void StudentsStream() async {
+    setState(() async{
+       await for (var snapshot in db
+        .collection("students")
+        .where('AdvisorUID', isEqualTo: uid)
+        .snapshots()) {
+      for (var message in snapshot.docs) {
+        print(message.data());
+      }
+    }
+    });
+   
   }
- 
-  TextEditingController editingController = TextEditingController();
-  List<String> names = [
-    "ابتهال",
-    "أروى",
-    "منيرة",
-    "جنا",
-    "سارة",
-    "خولة",
-    "خولة",
-    "سعاد",
-    "راما"
-  ];
 
-  List<String> searchResults = [];
+  TextEditingController editingController = TextEditingController();
+
   void filterSearchResults(String query) {
     setState(() {
       searchResults = names
@@ -48,15 +60,14 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   void initState() {
-    searchResults = names;
-  
+   
     super.initState();
+     getNames();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController = ScrollController();
-
+    
     void onQueryChanged(String query) {
       setState(() {
         searchResults = names
@@ -86,24 +97,16 @@ class _ChatWidgetState extends State<ChatWidget> {
                     border: OutlineInputBorder(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(16.0))),
-                    suffixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        print(names.length);
+                      },
+                    ),
                   ),
                 ),
               ),
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                controller: scrollController,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: searchResults.length,
-                itemBuilder: (context, i) {
-                  return ChatTile(
-                      name: searchResults[i],
-                      id: "442202323",
-                      msg: "مرحبا",
-                      time: "6:00مساء ");
-                },
-              ),
+              MessageStreamBuilder(),
             ],
           ),
         ),
@@ -111,4 +114,62 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
   }
 }
+
+class MessageStreamBuilder extends StatelessWidget {
+  const MessageStreamBuilder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: db
+            .collection("students")
+            .where('AdvisorUID', isEqualTo: uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          List<ChatTile> chatTiles = [];
+          if (!snapshot.hasData) {
+            //add here spinner
+
+            return const Center(
+              child: CircularProgressIndicator(backgroundColor: Colors.blue),
+            );
+          }
+
+          final students = snapshot.data!.docs;
+              // .where((student) => searchResults.contains(student.get('name')));
+
+          for (var student in students) {
+            
+            // final String name;
+            // final String id;
+            // final String msg;
+            // final String time;
+            final name = student.get('name');
+            final id = student.get('id');
+            final uid = student.get('uid');
+
+            final chatTile = ChatTile(
+              name: name,
+              id: id,
+              msg: "hi",
+              time: "6 صباحا",
+              uid: uid,
+            );
+            if (!names.contains(name)) {
+              names.add(name);
+            }
+
+            chatTiles.add(chatTile);
+          }
+          return ListView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: scrollController,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            children: chatTiles,
+          );
+        });
+  }
+}
+
 

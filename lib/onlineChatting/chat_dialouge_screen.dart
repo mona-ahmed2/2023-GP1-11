@@ -1,37 +1,141 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:wjjhni/Chatbot/message.dart';
-import 'package:wjjhni/onlineChatting/new_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:wjjhni/onlineChatting/new_message.dart';
+
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 String? email = FirebaseAuth.instance.currentUser!.email;
+String uid = FirebaseAuth.instance.currentUser!.uid;
+String name ="";
+bool isLoading=true;
+
+String stuUID="";
+ late DocumentSnapshot chatDocument;
 
 class ChatDialouge extends StatefulWidget {
-  const ChatDialouge({super.key});
-
+  const ChatDialouge({Key? key, required this.otherUserUid}) : super(key: key);
+final String  otherUserUid;
   @override
   State<ChatDialouge> createState() => _ChatDialougeState();
+    
 }
 
 class _ChatDialougeState extends State<ChatDialouge> {
-
-
   String? messageText;
-  String uid = FirebaseAuth.instance.currentUser!.uid;
 
   final TextEditingController _textEditingController = TextEditingController();
 
-  //function to get messgaes from DB
-  void messagesStreams() async {
-    await for (var snapshot in _firestore.collection("messages").snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
+  // //function to get messgaes from DB
+  // void messagesStreams() async {
+  //   await for (var snapshot in _firestore.collection("messages").snapshots()) {
+  //     for (var message in snapshot.docs) {
+  //       print(message.data());
+  //     }
+  //   }
+  // }
+Future<String> getStudentName() async {
+stuUID=widget.otherUserUid;
+await for (var snapshot in _firestore.collection("students").where("uid",isEqualTo: widget.otherUserUid).snapshots()){
+
+for(var student in snapshot.docs){
+ return student.get("name");
+
+  }
+}
+return "";
+ 
+}
+
+void initState() {
+   
+
+    super.initState();
+  }
+
+/************************************
+ * 
+ *          alert Dilouge UI
+ ************************************/
+  void openMediaDialogue() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            content: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        print(stuUID);
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "اختاري صورة من الكاميرا أو ألبوم الصور",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          final ImagePicker _picker = ImagePicker();
+                          final XFile? image = await _picker.pickImage(
+                              source: ImageSource.camera);
+                          if (image != null) {
+                            Navigator.pop(context);
+                           
+                          }
+                        },
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: const Color.fromRGBO(55, 94, 152, 1),
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          final ImagePicker _picker = ImagePicker();
+                          final XFile? image = await _picker.pickImage(
+                              source: ImageSource.gallery);
+                          if (image != null) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child:const  Icon(
+                          Icons.photo_album,
+                          color: const Color.fromRGBO(55, 94, 152, 1),
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ]),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -50,102 +154,129 @@ class _ChatDialougeState extends State<ChatDialouge> {
       backgroundColor: Color.fromARGB(255, 231, 231, 231),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        title: Text("محادثة طالبة معينة"),
+        title: FutureBuilder(future: getStudentName(), builder: (context, AsyncSnapshot snapshot){
+            if (snapshot.connectionState == ConnectionState.done)
+                return Text(snapshot.data);
+              else
+                return Text("");
+        }),
         centerTitle: true,
+        
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: Column(
-          children:[       
-                    MessageStreamBuilder(),
-                   
+          children: [
+            MessageStreamBuilder(),
             Padding(
               padding:
                   const EdgeInsets.only(left: 1, right: 1, bottom: 1, top: 4),
               //bar for sending message
               child: Container(
                 color: Colors.white,
-                child:
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            messagesStreams();
-                          },
-                          icon: Icon(Icons.photo),
-                          color: const Color.fromRGBO(55, 94, 152, 1),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _textEditingController,
-                            keyboardType: TextInputType.multiline,
-                            onChanged: (value) {
-                              messageText = value;
-                            },
-                            maxLines: null,
-                            decoration:
-                                const InputDecoration(labelText: 'أدخل رسالتك'),
-                            autocorrect: true,
-                            enableSuggestions: true,
-                            textCapitalization: TextCapitalization.sentences,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            _firestore.collection("messages").add({
-                              'content': messageText,
-                              'type': "text",
-                              'uid': uid,
-                              'addtime': DateTime.now(),
-                             
-                            });
-                            setState(() {
-                                _textEditingController.clear();
-                                FocusScopeNode currentFocus = FocusScope.of(context);
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        openMediaDialogue();
+                      },
+                      icon: Icon(Icons.photo),
+                      color: const Color.fromRGBO(55, 94, 152, 1),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _textEditingController,
+                        keyboardType: TextInputType.multiline,
+                        onChanged: (value) {
+                          messageText = value;
+                        },
+                        maxLines: null,
+                        decoration:
+                            const InputDecoration(labelText: 'أدخل رسالتك'),
+                        autocorrect: true,
+                        enableSuggestions: true,
+                        textCapitalization: TextCapitalization.sentences,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        if (!(messageText == "" ||
+                            messageText == null ||
+                            messageText == " "))
+if(chatDocument==null){
+  DocumentReference newDocRef = _firestore.collection("chat").doc();
+newDocRef.set({
+'last_msg':"",
+'msg_num':0,
+'last_time':new DateTime.now(),
+'adv_uid':uid,
+'stu_uid':stuUID,
+});
+
+}
+
+                          chatDocument.reference.collection("msglist").add({
+                            'content': messageText,
+                            'type': "text",
+                            'uid': uid,
+                            'addtime': FieldValue.serverTimestamp(),
+                          });
+                        setState(() {
+                          messageText = "";
+                          _textEditingController.clear();
+                          FocusScopeNode currentFocus = FocusScope.of(context);
                           if (!currentFocus.hasPrimaryFocus) {
                             currentFocus.unfocus();
                           }
-                            });
-                           
-                          },
-                          icon: Icon(Icons.send),
-                          color: const Color.fromRGBO(55, 94, 152, 1),
-                        ),
-                      ],
+                        });
+                      },
+                      icon: Icon(Icons.send),
+                      color: const Color.fromRGBO(55, 94, 152, 1),
                     ),
-                 
+                  ],
                 ),
               ),
-            ],),
-          
-      ),);
-      
-    
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class MesssageLine extends StatelessWidget {
-  const MesssageLine({this.text, this.sender, Key? key}): super(key: key);
+  const MesssageLine({this.text, required this.isMe, Key? key})
+      : super(key: key);
   final String? text;
-  final String? sender;
+
+  final bool isMe;
 
   @override
   Widget build(BuildContext context) {
-    return   Padding(
+    return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         children: [
-          Text("$sender",style: TextStyle(fontSize: 12,color: Colors.black45),),
           Material(
             elevation: 5,
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.blue[800],
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30))
+                : BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
+            color: isMe ? Colors.blue[800] : Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text(
                 "$text ",
-                style: TextStyle(fontSize: 15, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15, color: isMe ? Colors.white : Colors.black),
               ),
             ),
           ),
@@ -154,36 +285,152 @@ class MesssageLine extends StatelessWidget {
     );
   }
 }
-class MessageStreamBuilder extends StatelessWidget {
-  const MessageStreamBuilder({super.key});
+
+// class MessageStreamBuilder extends StatelessWidget {
+//   const MessageStreamBuilder({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<QuerySnapshot>(
+//         stream:
+//             _firestore.collection("chat").snapshots(),
+//         builder: (context, snapshot) {
+//           List<MesssageLine> messageWidgets = [];
+//           if (!snapshot.hasData) {
+// //add here spinner
+//             return const Center(
+//               child: CircularProgressIndicator(backgroundColor: Colors.blue),
+//             );
+//           }
+//           final messages = snapshot.data!.docs.reversed;
+//           for (var message in messages) {
+//             final messageText = message.get('content');
+//             final meesageSenderUid = message.get('uid');
+//             final currentUser = uid;
+
+//             final messgeWidget = MesssageLine(
+//               text: messageText,
+//               isMe: currentUser == meesageSenderUid,
+//             );
+
+//             messageWidgets.add(messgeWidget);
+//           }
+//           return Expanded(
+//             child: ListView(
+//               reverse: true,
+//               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+//               children: messageWidgets,
+//             ),
+//           );
+//         });
+//   }
+// }
+
+
+
+
+class MessageListBuilder extends StatelessWidget {
+  final DocumentSnapshot chatDoc;
+
+  const MessageListBuilder({Key? key, required this.chatDoc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-                        stream: _firestore.collection('messages').snapshots(),
-                        builder: (context, snapshot) {
-                          List<MesssageLine> messageWidgets = [];
-                          if (!snapshot.hasData) {
+      stream: chatDoc.reference.collection('msglist').orderBy('addtime').snapshots(),
+      builder: (context, snapshot) {
+        List<MesssageLine> messageWidgets = [];
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+        if (/*!snapshot.hasData || */  snapshot.data!.docs.isEmpty) {
+          return Expanded(child: Center(child: Text('لا توجد رسائل سابقة أبدأ الدردشة الآن')));
+        }
 
-//add here spinner
-return const Center(
-  child: CircularProgressIndicator(backgroundColor: Colors.blue),
-);
-                          }
-                          final messages = snapshot.data!.docs;
-                          for (var message in messages) {
-                            final messageText = message.get('content');
-                            final meesageSenderUid = message.get('uid');
-                            final messgeWidget =MesssageLine(text: messageText,sender: email,);
-                              
-                            messageWidgets.add(messgeWidget);
-                          }
-                          return Expanded(
-                            child: ListView(
-                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
-                              children: messageWidgets,
-                            ),
-                          );
-                        });
+        // Accessing documents from the 'msglist' collection inside each 'chat' document
+        final List<DocumentSnapshot> msgListDocs = snapshot.data!.docs;
+         final messages = snapshot.data!.docs.reversed;
+          for (var message in messages) {
+            final messageText = message.get('content');
+            final meesageSenderUid = message.get('uid');
+            final currentUser = uid;
+
+            final messgeWidget = MesssageLine(
+              text: messageText,
+              isMe: currentUser == meesageSenderUid,
+            );
+
+            messageWidgets.add(messgeWidget);
+          }
+        return Expanded(
+          child: ListView(
+              reverse: true,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              children: messageWidgets,
+            ),
+          );
+       
+      },
+    );
+  }
+}
+
+
+
+
+
+
+class MessageStreamBuilder extends StatelessWidget {
+  const MessageStreamBuilder({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection("chat").where("stu_uid",isEqualTo: stuUID).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting ) {
+          
+          return Center(
+            child: CircularProgressIndicator(backgroundColor: Colors.blue),
+          );
+        }
+        if(snapshot.data!.docs.isEmpty){
+           DocumentReference newDocRef = _firestore.collection("chat").doc();
+          newDocRef.set({
+            'last_msg': "",
+            'msg_num': 0,
+            'last_time': new DateTime.now(),
+            'adv_uid': uid,
+            'stu_uid': stuUID,
+          });
+
+          return Expanded(
+            child: Center(
+              child: Text("لا توجد رسائل سابقة أبدأ الدردشة الآن"),
+            ),
+          );
+
+        }
+        if (!snapshot.hasData  ) {
+          
+          return Expanded(
+            child: Center(
+              child: Text("لا توجد رسائل سابقة أبدأ الدردشة الآن"),
+            ),
+          );
+        }
+
+        // Accessing documents from the 'chat' collection
+        final List<DocumentSnapshot> chatDocs = snapshot.data!.docs;
+
+       chatDocument=chatDocs[0];
+          return MessageListBuilder(chatDoc:chatDocs[0]);
+        
+            
+         
+          
+        
+      },
+    );
   }
 }

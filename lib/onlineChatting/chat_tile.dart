@@ -6,6 +6,7 @@ class ChatTile extends StatelessWidget {
   final String id;
   final String msg;
   final String time;
+  final String uid;
   final String img = "assets/user.png";
 
   const ChatTile({
@@ -14,6 +15,7 @@ class ChatTile extends StatelessWidget {
     required this.id,
     required this.msg,
     required this.time,
+    required this.uid,
   }) : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class ChatTile extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatDialouge()),
+            MaterialPageRoute(builder: (context) => ChatDialouge(otherUserUid:uid)),
           );
         },
         tileColor: Colors.white,
