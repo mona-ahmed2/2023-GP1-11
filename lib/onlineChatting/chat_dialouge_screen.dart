@@ -5,24 +5,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wjjhni/onlineChatting/new_message.dart';
-
+import 'package:firebase_storage/firebase_storage.dart'
+    as firebase_storage; // For File Upload To Firestore
+import 'package:path/path.dart' as Path;
+import 'dart:io';
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 String? email = FirebaseAuth.instance.currentUser!.email;
 String uid = FirebaseAuth.instance.currentUser!.uid;
-String name ="";
-bool isLoading=true;
+String name = "";
+bool isLoading = true;
 
-String stuUID="";
- late DocumentSnapshot chatDocument;
+String stuUID = "";
+String advUID = "";
+late DocumentSnapshot chatDocument;
 
 class ChatDialouge extends StatefulWidget {
-  const ChatDialouge({Key? key, required this.otherUserUid}) : super(key: key);
-final String  otherUserUid;
+  const ChatDialouge(
+      {Key? key,
+      required this.otherUserUid,
+      required this.isAdvisor,
+      required this.isStudent})
+      : super(key: key);
+  final String otherUserUid;
+  final bool isAdvisor;
+  final bool isStudent;
+
   @override
   State<ChatDialouge> createState() => _ChatDialougeState();
-    
 }
 
 class _ChatDialougeState extends State<ChatDialouge> {
@@ -38,23 +49,81 @@ class _ChatDialougeState extends State<ChatDialouge> {
   //     }
   //   }
   // }
-Future<String> getStudentName() async {
-stuUID=widget.otherUserUid;
-await for (var snapshot in _firestore.collection("students").where("uid",isEqualTo: widget.otherUserUid).snapshots()){
 
-for(var student in snapshot.docs){
- return student.get("name");
-
+  void setting() {
+    if (widget.isAdvisor) {
+      advUID = uid;
+      stuUID = widget.otherUserUid;
+    } else {
+      advUID = widget.otherUserUid;
+      stuUID = uid;
+    }
   }
-}
-return "";
- 
-}
 
-void initState() {
-   
+  Future<String> getName() async {
+    setting();
+    if (widget.isAdvisor) {
+      await for (var snapshot in _firestore
+          .collection("students")
+          .where("uid", isEqualTo: widget.otherUserUid)
+          .snapshots()) {
+        for (var student in snapshot.docs) {
+          return student.get("name");
+        }
+      }
+    } else {
+      await for (var snapshot in _firestore
+          .collection("academic_advisors")
+          .where("uid", isEqualTo: advUID)
+          .snapshots()) {
+        for (var advisor in snapshot.docs) {
+          return advisor.get('name');
+        }
+      }
+    }
 
+    return "";
+  }
+
+  void initState() {
     super.initState();
+    setting();
+    getName();
+  }
+
+  Future<String?> uploadImageToFirebase(XFile imageFile) async {
+    try {
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('images')
+          .child('image_${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      // Upload file to Firebase Storage
+      await ref.putFile(File(imageFile.path));
+
+      // Get download URL
+      String downloadURL = await ref.getDownloadURL();
+
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image to Firebase Storage: $e');
+      return null;
+    }
+  }
+
+  // Function to save image URL to Firestore
+  Future<void> saveImageToFirestore(String imageURL) async {
+    try {
+      await chatDocument.reference.collection("msglist").add({
+        'content': imageURL,
+        'type': "image",
+        'uid': uid,
+        'addtime': FieldValue.serverTimestamp(),
+      });
+      print('Image URL saved to Firestore');
+    } catch (e) {
+      print('Error saving image URL to Firestore: $e');
+    }
   }
 
 /************************************
@@ -77,7 +146,7 @@ void initState() {
                     child: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
-                        print(stuUID);
+                        // print(stuUID);
                         Navigator.of(context).pop(); // Close the dialog
                       },
                     ),
@@ -100,9 +169,15 @@ void initState() {
                           final ImagePicker _picker = ImagePicker();
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.camera);
+
                           if (image != null) {
+                            String? imageURL =
+                                await uploadImageToFirebase(image);
+                            if (imageURL != null) {
+                              await saveImageToFirestore(imageURL);
+                            }
                             Navigator.pop(context);
-                           
+                            Navigator.of(context).pop();
                           }
                         },
                         child: Icon(
@@ -120,10 +195,16 @@ void initState() {
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.gallery);
                           if (image != null) {
+                            String? imageURL =
+                                await uploadImageToFirebase(image);
+                            if (imageURL != null) {
+                              await saveImageToFirestore(imageURL);
+                            }
                             Navigator.pop(context);
+                            Navigator.of(context).pop();
                           }
                         },
-                        child:const  Icon(
+                        child: const Icon(
                           Icons.photo_album,
                           color: const Color.fromRGBO(55, 94, 152, 1),
                           size: 30,
@@ -154,14 +235,15 @@ void initState() {
       backgroundColor: Color.fromARGB(255, 231, 231, 231),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        title: FutureBuilder(future: getStudentName(), builder: (context, AsyncSnapshot snapshot){
-            if (snapshot.connectionState == ConnectionState.done)
+        title: FutureBuilder(
+            future: getName(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done)
                 return Text(snapshot.data);
               else
                 return Text("");
-        }),
+            }),
         centerTitle: true,
-        
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
@@ -178,6 +260,7 @@ void initState() {
                   children: [
                     IconButton(
                       onPressed: () {
+                        print(widget.otherUserUid + 'test');
                         openMediaDialogue();
                       },
                       icon: Icon(Icons.photo),
@@ -202,25 +285,27 @@ void initState() {
                       onPressed: () {
                         if (!(messageText == "" ||
                             messageText == null ||
-                            messageText == " "))
-if(chatDocument==null){
-  DocumentReference newDocRef = _firestore.collection("chat").doc();
-newDocRef.set({
-'last_msg':"",
-'msg_num':0,
-'last_time':new DateTime.now(),
-'adv_uid':uid,
-'stu_uid':stuUID,
-});
-
-}
-
-                          chatDocument.reference.collection("msglist").add({
-                            'content': messageText,
-                            'type': "text",
-                            'uid': uid,
-                            'addtime': FieldValue.serverTimestamp(),
+                            messageText == " ")) if (chatDocument == null) {
+                          DocumentReference newDocRef =
+                              _firestore.collection("chat").doc();
+                          newDocRef.set({
+                            'last_msg': messageText,
+                            'msg_num': 1,
+                            'last_time': new DateTime.now(),
+                            'adv_uid': advUID,
+                            'stu_uid': stuUID,
                           });
+                        }
+                        chatDocument.reference.update({
+                          'last_time': new DateTime.now(),
+                          'last_msg': messageText,
+                        });
+                        chatDocument.reference.collection("msglist").add({
+                          'content': messageText,
+                          'type': "text",
+                          'uid': uid,
+                          'addtime': FieldValue.serverTimestamp(),
+                        });
                         setState(() {
                           messageText = "";
                           _textEditingController.clear();
@@ -326,9 +411,6 @@ class MesssageLine extends StatelessWidget {
 //   }
 // }
 
-
-
-
 class MessageListBuilder extends StatelessWidget {
   final DocumentSnapshot chatDoc;
 
@@ -337,48 +419,47 @@ class MessageListBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: chatDoc.reference.collection('msglist').orderBy('addtime').snapshots(),
+      stream: chatDoc.reference
+          .collection('msglist')
+          .orderBy('addtime')
+          .snapshots(),
       builder: (context, snapshot) {
         List<MesssageLine> messageWidgets = [];
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }
-        if (/*!snapshot.hasData || */  snapshot.data!.docs.isEmpty) {
-          return Expanded(child: Center(child: Text('لا توجد رسائل سابقة أبدأ الدردشة الآن')));
+        if (/*!snapshot.hasData || */ snapshot.data!.docs.isEmpty) {
+          return Expanded(
+              child:
+                  Center(child: Text('لا توجد رسائل سابقة أبدأ الدردشة الآن')));
         }
 
         // Accessing documents from the 'msglist' collection inside each 'chat' document
         final List<DocumentSnapshot> msgListDocs = snapshot.data!.docs;
-         final messages = snapshot.data!.docs.reversed;
-          for (var message in messages) {
-            final messageText = message.get('content');
-            final meesageSenderUid = message.get('uid');
-            final currentUser = uid;
+        final messages = snapshot.data!.docs.reversed;
+        for (var message in messages) {
+          final messageText = message.get('content');
+          final meesageSenderUid = message.get('uid');
+          final currentUser = uid;
 
-            final messgeWidget = MesssageLine(
-              text: messageText,
-              isMe: currentUser == meesageSenderUid,
-            );
+          final messgeWidget = MesssageLine(
+            text: messageText,
+            isMe: currentUser == meesageSenderUid,
+          );
 
-            messageWidgets.add(messgeWidget);
-          }
+          messageWidgets.add(messgeWidget);
+        }
         return Expanded(
           child: ListView(
-              reverse: true,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              children: messageWidgets,
-            ),
-          );
-       
+            reverse: true,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            children: messageWidgets,
+          ),
+        );
       },
     );
   }
 }
-
-
-
-
-
 
 class MessageStreamBuilder extends StatelessWidget {
   const MessageStreamBuilder({Key? key});
@@ -386,21 +467,23 @@ class MessageStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection("chat").where("stu_uid",isEqualTo: stuUID).snapshots(),
+      stream: _firestore
+          .collection("chat")
+          .where("stu_uid", isEqualTo: stuUID)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ) {
-          
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(backgroundColor: Colors.blue),
           );
         }
-        if(snapshot.data!.docs.isEmpty){
-           DocumentReference newDocRef = _firestore.collection("chat").doc();
+        if (snapshot.data!.docs.isEmpty) {
+          DocumentReference newDocRef = _firestore.collection("chat").doc();
           newDocRef.set({
             'last_msg': "",
             'msg_num': 0,
             'last_time': new DateTime.now(),
-            'adv_uid': uid,
+            'adv_uid': advUID,
             'stu_uid': stuUID,
           });
 
@@ -409,10 +492,8 @@ class MessageStreamBuilder extends StatelessWidget {
               child: Text("لا توجد رسائل سابقة أبدأ الدردشة الآن"),
             ),
           );
-
         }
-        if (!snapshot.hasData  ) {
-          
+        if (!snapshot.hasData) {
           return Expanded(
             child: Center(
               child: Text("لا توجد رسائل سابقة أبدأ الدردشة الآن"),
@@ -423,13 +504,8 @@ class MessageStreamBuilder extends StatelessWidget {
         // Accessing documents from the 'chat' collection
         final List<DocumentSnapshot> chatDocs = snapshot.data!.docs;
 
-       chatDocument=chatDocs[0];
-          return MessageListBuilder(chatDoc:chatDocs[0]);
-        
-            
-         
-          
-        
+        chatDocument = chatDocs[0];
+        return MessageListBuilder(chatDoc: chatDocs[0]);
       },
     );
   }

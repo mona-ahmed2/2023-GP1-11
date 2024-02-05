@@ -34,7 +34,7 @@ class ChatTile extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatDialouge(otherUserUid:uid)),
+            MaterialPageRoute(builder: (context) => ChatDialouge(otherUserUid:uid,isAdvisor: true,isStudent: false,)),
           );
         },
         tileColor: Colors.white,

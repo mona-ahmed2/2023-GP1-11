@@ -35,17 +35,16 @@ class ChatWidget extends StatefulWidget {
 
 class _ChatWidgetState extends State<ChatWidget> {
   void StudentsStream() async {
-    setState(() async{
-       await for (var snapshot in db
-        .collection("students")
-        .where('AdvisorUID', isEqualTo: uid)
-        .snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
+    setState(() async {
+      await for (var snapshot in db
+          .collection("students")
+          .where('AdvisorUID', isEqualTo: uid)
+          .snapshots()) {
+        for (var message in snapshot.docs) {
+          print(message.data());
+        }
       }
-    }
     });
-   
   }
 
   TextEditingController editingController = TextEditingController();
@@ -60,14 +59,12 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   void initState() {
-   
     super.initState();
-     getNames();
+    getNames();
   }
 
   @override
   Widget build(BuildContext context) {
-    
     void onQueryChanged(String query) {
       setState(() {
         searchResults = names
@@ -136,10 +133,10 @@ class MessageStreamBuilder extends StatelessWidget {
           }
 
           final students = snapshot.data!.docs;
-              // .where((student) => searchResults.contains(student.get('name')));
+          
+          // .where((student) => searchResults.contains(student.get('name')));
 
           for (var student in students) {
-            
             // final String name;
             // final String id;
             // final String msg;
@@ -147,11 +144,12 @@ class MessageStreamBuilder extends StatelessWidget {
             final name = student.get('name');
             final id = student.get('id');
             final uid = student.get('uid');
+            
 
             final chatTile = ChatTile(
               name: name,
               id: id,
-              msg: "hi",
+              msg: "",
               time: "6 صباحا",
               uid: uid,
             );
@@ -170,6 +168,20 @@ class MessageStreamBuilder extends StatelessWidget {
           );
         });
   }
+
+  Future<String> getLastMessgeInfo(String uid) async {
+    await for (var snapshot
+        in db.collection("chat").where("stu_uid", isEqualTo: uid).snapshots()) {
+     
+      for (var chat in snapshot.docs) {
+        return chat.get('last_msg');
+   
+      }
+     
+    }
+   return "";
+  }
 }
+
 
 
