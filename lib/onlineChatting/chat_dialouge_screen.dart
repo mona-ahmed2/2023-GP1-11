@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart'
     as firebase_storage; // For File Upload To Firestore
 import 'package:path/path.dart' as Path;
 import 'dart:io';
+import 'package:intl/intl.dart' as intl;
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
@@ -16,7 +17,6 @@ String? email = FirebaseAuth.instance.currentUser!.email;
 String uid = FirebaseAuth.instance.currentUser!.uid;
 String name = "";
 bool isLoading = true;
-
 String stuUID = "";
 String advUID = "";
 late DocumentSnapshot chatDocument;
@@ -120,6 +120,10 @@ class _ChatDialougeState extends State<ChatDialouge> {
         'uid': uid,
         'addtime': FieldValue.serverTimestamp(),
       });
+      await chatDocument.reference.update({
+        'last_time': new DateTime.now(),
+        'last_msg': messageText,
+      });
       print('Image URL saved to Firestore');
     } catch (e) {
       print('Error saving image URL to Firestore: $e');
@@ -175,9 +179,8 @@ class _ChatDialougeState extends State<ChatDialouge> {
                                 await uploadImageToFirebase(image);
                             if (imageURL != null) {
                               await saveImageToFirestore(imageURL);
+                              Navigator.pop(context);
                             }
-                            Navigator.pop(context);
-                            Navigator.of(context).pop();
                           }
                         },
                         child: Icon(
@@ -330,14 +333,26 @@ class _ChatDialougeState extends State<ChatDialouge> {
 }
 
 class MesssageLine extends StatelessWidget {
-  const MesssageLine({this.text, required this.isMe, Key? key})
+   const MesssageLine(
+      {this.content,
+      required this.isMe,
+      required this.type,
+      required this.time,
+      Key? key})
       : super(key: key);
-  final String? text;
-
+  final String? content;
+  final String type;
   final bool isMe;
+    final Timestamp time;
 
   @override
   Widget build(BuildContext context) {
+    String formattedDateTime="";
+    
+        DateTime dateTime = time.toDate();
+        formattedDateTime =
+            intl.DateFormat('yyyy-MM-dd hh:mm a', 'ar').format(dateTime);
+   
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -357,11 +372,43 @@ class MesssageLine extends StatelessWidget {
                     bottomRight: Radius.circular(30)),
             color: isMe ? Colors.blue[800] : Colors.white,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Text(
-                "$text ",
-                style: TextStyle(
-                    fontSize: 15, color: isMe ? Colors.white : Colors.black),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Column(
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                children: [
+                 GestureDetector(
+                    onTap: () {
+                      if (type == 'image' && content != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FullScreenImage(imageUrl: content!),
+                          ),
+                        );
+                      }
+                    },
+                    child: content != null && type == 'image'
+                        ? Image.network(
+                            content!,
+                            width: 200, // Adjust width as needed
+                            height: 200, // Adjust height as needed
+                          )
+                        : Text(
+                            "$content ",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: isMe ? Colors.white : Colors.black),
+                          ),
+                  ),
+                  Text(
+                    "$formattedDateTime ",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isMe ? Colors.white : Colors.black),
+                  ),
+                ],
               ),
             ),
           ),
@@ -370,46 +417,6 @@ class MesssageLine extends StatelessWidget {
     );
   }
 }
-
-// class MessageStreamBuilder extends StatelessWidget {
-//   const MessageStreamBuilder({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder<QuerySnapshot>(
-//         stream:
-//             _firestore.collection("chat").snapshots(),
-//         builder: (context, snapshot) {
-//           List<MesssageLine> messageWidgets = [];
-//           if (!snapshot.hasData) {
-// //add here spinner
-//             return const Center(
-//               child: CircularProgressIndicator(backgroundColor: Colors.blue),
-//             );
-//           }
-//           final messages = snapshot.data!.docs.reversed;
-//           for (var message in messages) {
-//             final messageText = message.get('content');
-//             final meesageSenderUid = message.get('uid');
-//             final currentUser = uid;
-
-//             final messgeWidget = MesssageLine(
-//               text: messageText,
-//               isMe: currentUser == meesageSenderUid,
-//             );
-
-//             messageWidgets.add(messgeWidget);
-//           }
-//           return Expanded(
-//             child: ListView(
-//               reverse: true,
-//               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-//               children: messageWidgets,
-//             ),
-//           );
-//         });
-//   }
-// }
 
 class MessageListBuilder extends StatelessWidget {
   final DocumentSnapshot chatDoc;
@@ -426,6 +433,7 @@ class MessageListBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         List<MesssageLine> messageWidgets = [];
         if (snapshot.connectionState == ConnectionState.waiting) {
+          // return SizedBox();
           return CircularProgressIndicator();
         }
         if (/*!snapshot.hasData || */ snapshot.data!.docs.isEmpty) {
@@ -440,10 +448,15 @@ class MessageListBuilder extends StatelessWidget {
         for (var message in messages) {
           final messageText = message.get('content');
           final meesageSenderUid = message.get('uid');
+          final type = message.get('type');
+          final Timestamp? addtime = message.get('addtime') as Timestamp?;
+
           final currentUser = uid;
 
           final messgeWidget = MesssageLine(
-            text: messageText,
+            content: messageText,
+            type: type,
+            time: addtime?? Timestamp.now(),
             isMe: currentUser == meesageSenderUid,
           );
 
@@ -507,6 +520,23 @@ class MessageStreamBuilder extends StatelessWidget {
         chatDocument = chatDocs[0];
         return MessageListBuilder(chatDoc: chatDocs[0]);
       },
+    );
+  }
+}
+class FullScreenImage extends StatelessWidget {
+  final String imageUrl;
+  const FullScreenImage({required this.imageUrl});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Image.network(imageUrl),
+        ),
+      ),
     );
   }
 }
