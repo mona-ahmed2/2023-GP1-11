@@ -17,13 +17,15 @@ void getNames() async {
       .collection("students")
       .where('AdvisorUID', isEqualTo: uid)
       .snapshots()) {
+        names.clear();
     for (var student in snapshot.docs) {
       if (!name.contains(student.get("name"))) {
         names.add(student.get("name"));
+        searchResults.add(student.get("name"));
       }
     }
   }
-  searchResults = names;
+  
 }
 
 class ChatWidget extends StatefulWidget {
@@ -34,18 +36,18 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  void StudentsStream() async {
-    setState(() async {
-      await for (var snapshot in db
-          .collection("students")
-          .where('AdvisorUID', isEqualTo: uid)
-          .snapshots()) {
-        for (var message in snapshot.docs) {
-          print(message.data());
-        }
-      }
-    });
-  }
+  // void StudentsStream() async {
+  //   setState(() async {
+  //     await for (var snapshot in db
+  //         .collection("students")
+  //         .where('AdvisorUID', isEqualTo: uid)
+  //         .snapshots()) {
+  //       for (var message in snapshot.docs) {
+  //         print(message.data());
+  //       }
+  //     }
+  //   });
+  // }
 
   TextEditingController editingController = TextEditingController();
 
@@ -145,7 +147,7 @@ class MessageStreamBuilder extends StatelessWidget {
             final id = student.get('id');
             final uid = student.get('uid');
             
-
+if (searchResults.contains(name)){
             final chatTile = ChatTile(
               name: name,
               id: id,
@@ -153,11 +155,12 @@ class MessageStreamBuilder extends StatelessWidget {
               time: "6 صباحا",
               uid: uid,
             );
-            if (!names.contains(name)) {
-              names.add(name);
-            }
+            // if (!names.contains(name)) {
+            //   names.add(name);
+            // }
 
             chatTiles.add(chatTile);
+}
           }
           return ListView(
             physics: NeverScrollableScrollPhysics(),
@@ -169,17 +172,23 @@ class MessageStreamBuilder extends StatelessWidget {
         });
   }
 
-  Future<String> getLastMessgeInfo(String uid) async {
-    await for (var snapshot
-        in db.collection("chat").where("stu_uid", isEqualTo: uid).snapshots()) {
-     
-      for (var chat in snapshot.docs) {
-        return chat.get('last_msg');
-   
+ Future<String> getLastMessageInfo(String uid) async {
+    try {
+      final snapshot = await db
+          .collection("chat")
+          .where("stu_uid", isEqualTo: uid)
+          .orderBy("timestamp",
+              descending: true) // Assuming you have a timestamp field
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.get('last_msg');
       }
-     
+    } catch (e) {
+      print('Error retrieving last message: $e');
     }
-   return "";
+    return "";
   }
 }
 
