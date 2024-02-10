@@ -44,6 +44,11 @@ class _ChatDialougeState extends State<ChatDialouge> {
  
 
   void setting() {
+
+setState(() {
+  uid= FirebaseAuth.instance.currentUser!.uid;
+});
+
     if (widget.isAdvisor) {
       advUID = uid;
       stuUID = widget.otherUserUid;
@@ -292,7 +297,12 @@ return adv.get("name");
                       onPressed: () {
                         if (!(messageText == "" ||
                             messageText == null ||
-                            messageText == " ")) if (chatDocument == null) {
+                            messageText == " ")
+                            ){
+                            
+                            
+                            
+                             if (chatDocument == null) {
                           DocumentReference newDocRef =
                               _firestore.collection("chat").doc();
                           newDocRef.set({
@@ -321,7 +331,7 @@ return adv.get("name");
                             currentFocus.unfocus();
                           }
                         });
-                      },
+                      }},
                       icon: Icon(Icons.send),
                       color: const Color.fromRGBO(55, 94, 152, 1),
                     ),
