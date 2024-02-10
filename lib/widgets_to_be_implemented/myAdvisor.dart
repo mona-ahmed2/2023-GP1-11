@@ -7,11 +7,11 @@ import 'package:wjjhni/Screens_to_be_implemented/rate_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 final _auth = FirebaseAuth.instance;
 String uid = FirebaseAuth.instance.currentUser!.uid;
 final _firestore = FirebaseFirestore.instance;
- String advuid="";
-
+String advuid = "";
 
 class MyAdvisor extends StatefulWidget {
   const MyAdvisor({super.key});
@@ -35,22 +35,44 @@ class _MyAdvisorState extends State<MyAdvisor> {
     Icons.stars,
   ];
 
+//   void getAdvisorUID() async {
+//     await for (var snapshot in _firestore.collection("students").where('uid',isEqualTo: uid).snapshots()) {
+//       for (var student in snapshot.docs) {
+// setState(() {
+//    advUID = student.get('AdvisorUID');
+// });
+       
+//       }
+//     }
+//   }
+
 void getAdvisorUID() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+          .collection('students')
+          .where('uid', isEqualTo: uid)
+          .get();
 
-
-
-      await for (var snapshot in _firestore.collection("students").snapshots()) {
-        for (var student in snapshot.docs) {
-          advUID=student.get('AdvisorUID');
-        }
+      // Check if there's any data returned
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          advUID = querySnapshot.docs.first.get('AdvisorUID');
+        });
       }
-    
+    } catch (e) {
+      // Handle error if query fails
+      print('Error retrieving AdvisorUID: $e');
+    }
+  }
+
+  
+
     // try {
     //   QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
     //       .collection(
-    //           'students') 
+    //           'students')
     //       .where('uid',
-    //           isEqualTo: uid) 
+    //           isEqualTo: uid)
     //       .get();
     //        Map<String, dynamic> data = querySnapshot.docs.first.data();
     //   advuid = data['AdvisorUID'];
@@ -61,22 +83,42 @@ void getAdvisorUID() async {
     //   print('Error retrieving AdvisorUID: $e');
     //   return null;
     // }
-  }
-@override
-void initState() {
+  
+
+
+  
+
+  @override
+  void initState() {
+     super.initState();
      getAdvisorUID();
-    super.initState();
+   
    
   }
-  List<Widget> links = [
-    ChatDialouge(otherUserUid: advuid,isAdvisor: false,isStudent: true,),
-    BooKAppointment(),
-    AllAppointments(),
-    RateScreen(),
-  ];
+
+  
 
   @override
   Widget build(BuildContext context) {
+   
+    setState(() {
+      getAdvisorUID();
+      
+    });
+    List<Widget> links= [];
+   
+ links = [
+        ChatDialouge(
+          otherUserUid: advuid,
+          isAdvisor: false,
+          isStudent: true,
+        ),
+        BooKAppointment(),
+        AllAppointments(),
+        RateScreen(),
+      ];
+    
+    
     return ListView.builder(
       padding: EdgeInsets.all(8),
       scrollDirection: Axis.vertical,
@@ -86,10 +128,11 @@ void initState() {
           padding: EdgeInsets.all(8.0),
           height: 100,
           child: InkWell(
-            onTap :  () async {
-              
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => links[index]));
+            onTap: () async {
+              getAdvisorUID();
+              print("$advUID +adv uid");
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => links[index]));
             },
             child: Card(
               child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [

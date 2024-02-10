@@ -15,7 +15,7 @@ final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 String? email = FirebaseAuth.instance.currentUser!.email;
 String uid = FirebaseAuth.instance.currentUser!.uid;
-String name = "";
+
 bool isLoading = true;
 String stuUID = "";
 String advUID = "";
@@ -41,22 +41,18 @@ class _ChatDialougeState extends State<ChatDialouge> {
 
   final TextEditingController _textEditingController = TextEditingController();
 
-  // //function to get messgaes from DB
-  // void messagesStreams() async {
-  //   await for (var snapshot in _firestore.collection("messages").snapshots()) {
-  //     for (var message in snapshot.docs) {
-  //       print(message.data());
-  //     }
-  //   }
-  // }
+ 
 
   void setting() {
     if (widget.isAdvisor) {
       advUID = uid;
       stuUID = widget.otherUserUid;
     } else {
-      advUID = widget.otherUserUid;
-      stuUID = uid;
+      setState(() {
+        advUID = widget.otherUserUid;
+        stuUID = uid;
+      });
+      
     }
   }
 
@@ -72,12 +68,20 @@ class _ChatDialougeState extends State<ChatDialouge> {
         }
       }
     } else {
+      //if i am a student
+      String uidAdv="";
       await for (var snapshot in _firestore
-          .collection("academic_advisors")
-          .where("uid", isEqualTo: advUID)
+          .collection("students")
+          .where("uid", isEqualTo: uid)
           .snapshots()) {
-        for (var advisor in snapshot.docs) {
-          return advisor.get('name');
+        for (var  student in snapshot.docs) {
+          uidAdv= student.get('AdvisorUID');
+          advUID=uidAdv;
+        }
+        await for(var snapshot in _firestore.collection("academic_advisors").where("uid",isEqualTo: uidAdv).snapshots()){
+for(var adv in snapshot.docs){
+return adv.get("name");
+}
         }
       }
     }
@@ -244,7 +248,7 @@ class _ChatDialougeState extends State<ChatDialouge> {
               if (snapshot.connectionState == ConnectionState.done)
                 return Text(snapshot.data);
               else
-                return Text("");
+                return Text("no data");
             }),
         centerTitle: true,
       ),
