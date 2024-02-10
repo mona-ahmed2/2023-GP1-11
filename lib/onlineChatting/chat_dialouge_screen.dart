@@ -180,6 +180,7 @@ return adv.get("name");
                       InkWell(
                         onTap: () async {
                           final ImagePicker _picker = ImagePicker();
+                          Navigator.pop(context);
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.camera);
 
@@ -188,7 +189,7 @@ return adv.get("name");
                                 await uploadImageToFirebase(image);
                             if (imageURL != null) {
                               await saveImageToFirestore(imageURL);
-                              Navigator.pop(context);
+                              
                             }
                           }
                         },
@@ -204,16 +205,18 @@ return adv.get("name");
                       InkWell(
                         onTap: () async {
                           final ImagePicker _picker = ImagePicker();
+                          Navigator.pop(context);
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.gallery);
                           if (image != null) {
+                             
                             String? imageURL =
                                 await uploadImageToFirebase(image);
                             if (imageURL != null) {
                               await saveImageToFirestore(imageURL);
                             }
-                            Navigator.pop(context);
-                            Navigator.of(context).pop();
+                           
+                           
                           }
                         },
                         child: const Icon(
@@ -377,8 +380,8 @@ class MesssageLine extends StatelessWidget {
             elevation: 5,
             borderRadius: isMe
                 ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
+                    topLeft: const Radius.circular(30),
+                    bottomLeft:const Radius.circular(30),
                     bottomRight: Radius.circular(30))
                 : BorderRadius.only(
                     topRight: Radius.circular(30),
@@ -447,8 +450,8 @@ class MessageListBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         List<MesssageLine> messageWidgets = [];
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // return SizedBox();
-          return CircularProgressIndicator();
+          return Center();
+          // return CircularProgressIndicator();
         }
         if (/*!snapshot.hasData || */ snapshot.data!.docs.isEmpty) {
           return Expanded(
@@ -501,6 +504,7 @@ class MessageStreamBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
+            
             child: CircularProgressIndicator(backgroundColor: Colors.blue),
           );
         }
