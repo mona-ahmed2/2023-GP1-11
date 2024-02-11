@@ -8,14 +8,16 @@ class ChatTile extends StatelessWidget {
   final String time;
   final String uid;
   final String img = "assets/user.png";
+  int numberOfmessages;
 
-  const ChatTile({
+   ChatTile({
     Key? key,
     required this.name,
     required this.id,
     required this.msg,
     required this.time,
     required this.uid,
+    required this.numberOfmessages,
   }) : super(key: key);
 
   @override
@@ -61,11 +63,27 @@ class ChatTile extends StatelessWidget {
               time,
               style: const TextStyle(fontSize: 12),
             ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: Color.fromARGB(255, 17, 110, 187),
-              size: 20,
-            ),
+            // const Icon(
+            //   Icons.arrow_forward_ios,
+            //   color: Color.fromARGB(255, 17, 110, 187),
+            //   size: 20,
+            // ),
+
+            numberOfmessages!=0?Container(
+               width: 15, // Adjust width as needed
+              height: 15, // Adjust height as needed
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue, // Adjust color as needed
+              ),
+              child: Center(
+                child: Text(
+                  numberOfmessages==0?
+                "" :"$numberOfmessages",
+                   style: const TextStyle(fontSize: 13,color: Colors.white),
+                ),
+              ),
+            ):Text(""),
            
             // Spacer(),
             

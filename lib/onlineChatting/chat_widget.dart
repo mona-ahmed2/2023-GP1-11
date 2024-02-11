@@ -160,9 +160,10 @@ class MessageStreamBuilder extends StatelessWidget {
                     
                     String lastMessage="";
                      String formattedTime = ''; 
+                     int msg_num=0;
                     if(snapshot.data!=null && snapshot.hasData ){
                       lastMessage = snapshot.data!.get('last_msg')??"";
-                      
+                      msg_num=snapshot.data!.get('msg_num')??0;
                       final time = snapshot.data!.get('last_time')??"";
 
                        if (time != null) {
@@ -194,6 +195,7 @@ class MessageStreamBuilder extends StatelessWidget {
                       msg: lastMessage,
                       time: formattedTime,
                       uid: uid,
+                      numberOfmessages: msg_num,
                     );
                   }
                 },

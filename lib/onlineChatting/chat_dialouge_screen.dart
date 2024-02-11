@@ -98,6 +98,30 @@ return adv.get("name");
     super.initState();
     setting();
     getName();
+
+if (widget.isAdvisor) {
+      // Perform the query to find the document with uid "sfggolede"
+      _firestore
+          .collection('chat')
+          .where('adv_uid', isEqualTo: uid).where('stu_uid',isEqualTo:stuUID)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          // Update the document with msg_num = 0
+          doc.reference.update({
+            'msg_num': 0,
+          }).then((_) {
+            print('Document updated successfully');
+          }).catchError((error) {
+            print('Error updating document: $error');
+          });
+        });
+      }).catchError((error) {
+        print('Error getting documents: $error');
+      });
+    }
+
+
   }
 
   Future<String?> uploadImageToFirebase(XFile imageFile) async {
@@ -256,7 +280,7 @@ return adv.get("name");
               if (snapshot.connectionState == ConnectionState.done)
                 return Text(snapshot.data);
               else
-                return Text("no data");
+                return Text("");
             }),
         centerTitle: true,
       ),
@@ -310,15 +334,17 @@ return adv.get("name");
                               _firestore.collection("chat").doc();
                           newDocRef.set({
                             'last_msg': messageText,
-                            'msg_num': 1,
+                            
                             'last_time': new DateTime.now(),
                             'adv_uid': advUID,
                             'stu_uid': stuUID,
+                            'msg_num':widget.isStudent?1:0,
                           });
                         }
                         chatDocument.reference.update({
                           'last_time': new DateTime.now(),
                           'last_msg': messageText,
+                          'msg_num':widget.isStudent?chatDocument.get('msg_num')+1:0,
                         });
                         chatDocument.reference.collection("msglist").add({
                           'content': messageText,
