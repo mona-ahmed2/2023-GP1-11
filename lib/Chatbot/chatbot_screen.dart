@@ -39,14 +39,21 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 this method for sending question and receiving chatbot answer @ibtihalx
 -----------------------------------------------------------------*/
   void response(query) async {
+    setState(() {
+      isTyping = true;
+    });
+   
+    
     chat.createSession().then((value) => {
           chat.sendInput(query).then((response) => {
                 setState(() {
                   msgs.add(Message(
                       false, response?.output?.generic?[0].toJson()["text"]));
+                        isTyping = false; 
                 })
               })
         });
+       
   }
 
 /* -----------------------------------------
@@ -70,37 +77,36 @@ this method for sending question and receiving chatbot answer @ibtihalx
             ),
           ),
           Expanded(
+           
             child: ListView.builder(
-                controller: scrollController,
-                shrinkWrap: true,
-                // reverse: true,
-                itemCount: msgs.length,
-                itemBuilder: (context, index) {
-                  // print(msgs[1].msg);
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: index == 0
-                          ? BubbleNormal(
-                              text: msgs[0].msg,
-                              isSender: true,
-                              color: Colors.blue.shade100,
-                            )
+            controller: scrollController,
+            shrinkWrap: true,
+            itemCount: isTyping ? msgs.length + 1 : msgs.length,
+            itemBuilder: (context, index) {
+              if (isTyping && index == msgs.length) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: BubbleNormal(
+                    text: 'يكتب ..',
+                    isSender: false,
+                    color: Colors.grey.shade200,
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: BubbleNormal(
+                    text: msgs[index].msg,
+                    isSender: msgs[index].isSender,
+                    color: msgs[index].isSender
+                        ? Colors.blue.shade100
+                        : Colors.grey.shade200,
+                  ),
+                );
+              }
+            },
+          ),
 
-                          // const Padding(
-                          //   padding: EdgeInsets.only(left: 16, top: 4),
-                          //   child: Align(
-                          //       alignment: Alignment.centerLeft,
-                          //       child: Text("Typing...")),
-                          // )
-
-                          : BubbleNormal(
-                              text: msgs[index].msg,
-                              isSender: msgs[index].isSender,
-                              color: msgs[index].isSender
-                                  ? Colors.blue.shade100
-                                  : Colors.grey.shade200,
-                            ));
-                }),
           ),
           const Divider(
             height: 3,
