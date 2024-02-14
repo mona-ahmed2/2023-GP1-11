@@ -155,7 +155,8 @@ if (widget.isAdvisor) {
       });
       await chatDocument.reference.update({
         'last_time': new DateTime.now(),
-        'last_msg': messageText,
+        'last_msg': "صورة",
+         'msg_num': widget.isStudent ? chatDocument.get('msg_num') + 1 : 0,
       });
       print('Image URL saved to Firestore');
     } catch (e) {
