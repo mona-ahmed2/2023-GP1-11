@@ -8,7 +8,6 @@ import 'dart:math' as math;
 import 'package:wjjhni/Chatbot/message.dart';
 import 'package:wjjhni/Chatbot/chatbot_service.dart';
 
-
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
 
@@ -39,11 +38,16 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 this method for sending question and receiving chatbot answer @ibtihalx
 -----------------------------------------------------------------*/
   void response(query) async {
+    setState(() {
+      isTyping = true;
+    });
+
     chat.createSession().then((value) => {
           chat.sendInput(query).then((response) => {
                 setState(() {
                   msgs.add(Message(
                       false, response?.output?.generic?[0].toJson()["text"]));
+                  isTyping = false;
                 })
               })
         });
@@ -55,119 +59,114 @@ this method for sending question and receiving chatbot answer @ibtihalx
 --------------------------------------------*/
   @override
   Widget build(BuildContext context) {
-    
     return Column(
-        children: [
-          Center(
-            child: Container(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 10.0),
-              child: Text(
-                getDate(),
+      children: [
+        Center(
+          child: Container(
+            padding: const EdgeInsets.only(top: 16.0, bottom: 10.0),
+            child: Text(
+              getDate(),
+              style: const TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            controller: scrollController,
+            shrinkWrap: true,
+            itemCount: isTyping ? msgs.length + 1 : msgs.length,
+            itemBuilder: (context, index) {
+              if (isTyping && index == msgs.length) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: BubbleNormal(
+                    text: 'يكتب ..',
+                    isSender: false,
+                    color: Colors.grey.shade200,
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: BubbleNormal(
+                    text: msgs[index].msg,
+                    isSender: msgs[index].isSender,
+                    color: msgs[index].isSender
+                        ? Colors.blue.shade100
+                        : Colors.grey.shade200,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+        const Divider(
+          height: 3,
+          color: Colors.black,
+        ),
+        Container(
+          color: const Color.fromRGBO(129, 154, 190, 1),
+          child: ListTile(
+            title: Container(
+              // height: ,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                color: Color.fromRGBO(255, 254, 254, 1),
+              ),
+              padding: const EdgeInsets.only(right: 16.0),
+              child: TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: messageControler,
+                textAlign: TextAlign.right,
+                decoration: const InputDecoration(
+                  hintText: "أدخل رسالتك",
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  // filled: true,
+                ),
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
+                  color: Colors.black,
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                controller: scrollController,
-                shrinkWrap: true,
-                // reverse: true,
-                itemCount: msgs.length,
-                itemBuilder: (context, index) {
-                  // print(msgs[1].msg);
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: index == 0
-                          ? BubbleNormal(
-                              text: msgs[0].msg,
-                              isSender: true,
-                              color: Colors.blue.shade100,
-                            )
-
-                          // const Padding(
-                          //   padding: EdgeInsets.only(left: 16, top: 4),
-                          //   child: Align(
-                          //       alignment: Alignment.centerLeft,
-                          //       child: Text("Typing...")),
-                          // )
-
-                          : BubbleNormal(
-                              text: msgs[index].msg,
-                              isSender: msgs[index].isSender,
-                              color: msgs[index].isSender
-                                  ? Colors.blue.shade100
-                                  : Colors.grey.shade200,
-                            ));
-                }),
-          ),
-          const Divider(
-            height: 3,
-            color: Colors.black,
-          ),
-          Container(
-            color: const Color.fromRGBO(129, 154, 190, 1),
-            child: ListTile(
-              title: Container(
-                // height: ,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  color: Color.fromRGBO(255, 254, 254, 1),
-                ),
-                padding: const EdgeInsets.only(right: 16.0),
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  controller: messageControler,
-                  textAlign: TextAlign.right,
-                  decoration: const InputDecoration(
-                    hintText: "أدخل رسالتك",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    // filled: true,
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
+            leading: IconButton(
+              icon: Transform.rotate(
+                angle: 180 * math.pi / 180,
+                child: const Icon(
+                  Icons.send,
+                  size: 32,
+                  color: Colors.black38,
                 ),
               ),
-              leading: IconButton(
-                icon: Transform.rotate(
-                  angle: 180 * math.pi / 180,
-                  child: const Icon(
-                    Icons.send,
-                    size: 32,
-                    color: Colors.black38,
-                  ),
-                ),
-                onPressed: () {
-                  if (messageControler.text.isEmpty) {
-                    if (kDebugMode) {
-                      print("empty message");
-                    }
-                  } else {
-                    setState(() {
-                      msgs.add(Message(true, messageControler.text));
-                      response(messageControler.text.replaceAll("\n", " "));
-                      messageControler.clear();
-                    });
+              onPressed: () {
+                if (messageControler.text.isEmpty) {
+                  if (kDebugMode) {
+                    print("empty message");
                   }
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                },
-              ),
+                } else {
+                  setState(() {
+                    msgs.add(Message(true, messageControler.text));
+                    response(messageControler.text.replaceAll("\n", " "));
+                    messageControler.clear();
+                  });
+                }
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
             ),
           ),
-        ],
-      );
-    
+        ),
+      ],
+    );
   }
 }
 
@@ -176,7 +175,8 @@ class BubbleNormal extends StatelessWidget {
   final bool isSender;
   final Color color;
 
-  const BubbleNormal({super.key,
+  const BubbleNormal({
+    super.key,
     required this.text,
     required this.isSender,
     required this.color,

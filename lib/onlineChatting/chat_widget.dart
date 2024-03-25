@@ -4,7 +4,9 @@ import 'package:wjjhni/onlineChatting/chat_tile.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'package:intl/intl.dart' as intl;
 
 String uid = FirebaseAuth.instance.currentUser!.uid;
 final db = FirebaseFirestore.instance;
@@ -17,13 +19,14 @@ void getNames() async {
       .collection("students")
       .where('AdvisorUID', isEqualTo: uid)
       .snapshots()) {
+    names.clear();
     for (var student in snapshot.docs) {
-      if (!name.contains(student.get("name"))) {
+      if (!names.contains(student.get("name"))) {
         names.add(student.get("name"));
+        searchResults.add(student.get("name"));
       }
     }
   }
-  searchResults = names;
 }
 
 class ChatWidget extends StatefulWidget {
@@ -34,18 +37,18 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  void StudentsStream() async {
-    setState(() async {
-      await for (var snapshot in db
-          .collection("students")
-          .where('AdvisorUID', isEqualTo: uid)
-          .snapshots()) {
-        for (var message in snapshot.docs) {
-          print(message.data());
-        }
-      }
-    });
-  }
+  // void StudentsStream() async {
+  //   setState(() async {
+  //     await for (var snapshot in db
+  //         .collection("students")
+  //         .where('AdvisorUID', isEqualTo: uid)
+  //         .snapshots()) {
+  //       for (var message in snapshot.docs) {
+  //         print(message.data());
+  //       }
+  //     }
+  //   });
+  // }
 
   TextEditingController editingController = TextEditingController();
 
@@ -113,75 +116,99 @@ class _ChatWidgetState extends State<ChatWidget> {
 }
 
 class MessageStreamBuilder extends StatelessWidget {
-  const MessageStreamBuilder({super.key});
+  const MessageStreamBuilder({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: db
-            .collection("students")
-            .where('AdvisorUID', isEqualTo: uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          List<ChatTile> chatTiles = [];
-          if (!snapshot.hasData) {
-            //add here spinner
+      stream: db
+          .collection("students")
+          .where('AdvisorUID', isEqualTo: uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(backgroundColor: Colors.blue),
+          );
+        }
 
-            return const Center(
-              child: CircularProgressIndicator(backgroundColor: Colors.blue),
-            );
-          }
+        final students = snapshot.data!.docs;
 
-          final students = snapshot.data!.docs;
-          
-          // .where((student) => searchResults.contains(student.get('name')));
-
-          for (var student in students) {
-            // final String name;
-            // final String id;
-            // final String msg;
-            // final String time;
+        return ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          controller: scrollController,
+          shrinkWrap: true,
+          itemCount: students.length,
+          itemBuilder: (context, index) {
+            final student = students[index];
             final name = student.get('name');
             final id = student.get('id');
             final uid = student.get('uid');
-            
 
-            final chatTile = ChatTile(
-              name: name,
-              id: id,
-              msg: "",
-              time: "6 صباحا",
-              uid: uid,
-            );
-            if (!names.contains(name)) {
-              names.add(name);
+            if (searchResults.contains(name)) {
+              return FutureBuilder<DocumentSnapshot?>(
+                future: getLastMessageInfo(uid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    String lastMessage = "";
+                    String formattedTime = '';
+                    int msg_num = 0;
+                    if (snapshot.data != null && snapshot.hasData) {
+                      lastMessage = snapshot.data!.get('last_msg') ?? "";
+                      msg_num = snapshot.data!.get('msg_num') ?? 0;
+                      final time = snapshot.data!.get('last_time') ?? "";
+
+                      if (time != null) {
+                        DateTime dateTime = (time as Timestamp).toDate();
+
+                        formattedTime =
+                            intl.DateFormat.yMMMd('ar').format(dateTime);
+                      }
+                    } else {
+                      lastMessage = "";
+                      formattedTime = "";
+                    }
+
+                    return ChatTile(
+                      name: name,
+                      id: id,
+                      msg: lastMessage,
+                      time: formattedTime,
+                      uid: uid,
+                      numberOfmessages: msg_num,
+                    );
+                  }
+                },
+              );
+            } else {
+              return SizedBox(); // Return an empty SizedBox for non-matching items
             }
-
-            chatTiles.add(chatTile);
-          }
-          return ListView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: scrollController,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: chatTiles,
-          );
-        });
+          },
+        );
+      },
+    );
   }
 
-  Future<String> getLastMessgeInfo(String uid) async {
-    await for (var snapshot
-        in db.collection("chat").where("stu_uid", isEqualTo: uid).snapshots()) {
-     
-      for (var chat in snapshot.docs) {
-        return chat.get('last_msg');
-   
+  Future<DocumentSnapshot?> getLastMessageInfo(String uid) async {
+    try {
+      final snapshot = await db
+          .collection("chat")
+          .where("stu_uid", isEqualTo: uid)
+          .orderBy('last_time', descending: true)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first;
       }
-     
+    } catch (e) {
+      print('Error retrieving last message: $e');
     }
-   return "";
+
+    return null; // Return null if no document is found or an error occurs
   }
 }
-
-
 
