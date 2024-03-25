@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wjjhni/Screens/all_availability_hours_screen.dart';
 import 'package:wjjhni/Screens/availability_hours_screen.dart';
+import 'package:wjjhni/Screens_to_be_implemented/AddNoteScreen.dart';
 import 'package:wjjhni/Screens_to_be_implemented/all_appointments.dart';
 import 'package:flutter/material.dart';
+import 'package:wjjhni/Screens_to_be_implemented/booked_appointments.dart';
+
+import '../Screens_to_be_implemented/AddNote_ListStudents_Screen.dart';
+import '../Screens_to_be_implemented/advisor_notes_list.dart';
 
 class AcademicAppo extends StatefulWidget {
   const AcademicAppo({super.key});
@@ -11,25 +18,39 @@ class AcademicAppo extends StatefulWidget {
 }
 
 class _AcademicAppoState extends State<AcademicAppo> {
+  String uid = "";
+  final db = FirebaseFirestore.instance;
+  
   static final List<String> titles = [
     "إضافة الساعات المتاحة",
     "عرض الساعات المتاحة",
     "عرض مواعيدي المحجوزة",
-    "إلغاء موعد"
   ];
+  /*
+    "اضافة ملاحظة",
+    "قائمة الملاحظات"
+  */
 
-  static final List<IconData> icons = [
-    Icons.alarm_add,
-    Icons.view_agenda,
-    Icons.calendar_month,
-    Icons.cancel,
-  ];
-  static final List<Widget> links = [
-    AvailabilityHoursScreen(),
-    AllAvailabilityHoursScreen(),
-    AllAppointments(),
-    AllAppointments(),
-  ];
+  List<IconData> icons = [];
+  List<Widget> links =[];
+  @override
+  void initState() {
+    super.initState();
+      uid = FirebaseAuth.instance.currentUser!.uid;
+      icons = [
+        Icons.alarm_add,
+        Icons.view_agenda,
+        Icons.calendar_month,
+      ];/*
+        Icons.add,
+        Icons.list_alt_outlined,
+        */
+      links = [
+        AvailabilityHoursScreen(),
+        AllAvailabilityHoursScreen(),
+        BookedAppointments(), 
+      ];
+  }
 
   @override
   Widget build(BuildContext context) {

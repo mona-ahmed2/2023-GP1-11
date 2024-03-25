@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:wjjhni/Screens_to_be_implemented/AddNoteScreen.dart';
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 
-class ChatTile extends StatelessWidget {
+import '../Screens_to_be_implemented/advisor_notes_list.dart';
+
+class NoteTile extends StatelessWidget {
   final String name;
   final String id;
   final String msg;
   final String time;
   final String uid;
+  final String adv_uid;
   final String img = "assets/user.png";
 
-  const ChatTile({
+  const NoteTile({
     Key? key,
     required this.name,
     required this.id,
     required this.msg,
     required this.time,
     required this.uid,
+    required this.adv_uid,
   }) : super(key: key);
 
   @override
@@ -32,9 +37,16 @@ class ChatTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
+          /*
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatDialouge(otherUserUid:uid,isAdvisor: true,isStudent: false,)),
+            MaterialPageRoute(builder: (context) => AddNoteScreen(otherUserUid:uid,isAdvisor: false,isStudent: true, studentName:name )),
+          );
+          */
+          
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AdvisorNotesList(studentID:uid, advisorID: advUID,)),
           );
         },
         tileColor: Colors.white,

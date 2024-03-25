@@ -9,14 +9,14 @@ import 'package:firebase_storage/firebase_storage.dart'
     as firebase_storage; // For File Upload To Firestore
 import 'package:path/path.dart' as Path;
 import 'dart:io';
-import 'package:intl/intl.dart' as intl;
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 String? email = FirebaseAuth.instance.currentUser!.email;
 String uid = FirebaseAuth.instance.currentUser!.uid;
-
+String name = "";
 bool isLoading = true;
+
 String stuUID = "";
 String advUID = "";
 late DocumentSnapshot chatDocument;
@@ -41,23 +41,22 @@ class _ChatDialougeState extends State<ChatDialouge> {
 
   final TextEditingController _textEditingController = TextEditingController();
 
- 
+  // //function to get messgaes from DB
+  // void messagesStreams() async {
+  //   await for (var snapshot in _firestore.collection("messages").snapshots()) {
+  //     for (var message in snapshot.docs) {
+  //       print(message.data());
+  //     }
+  //   }
+  // }
 
   void setting() {
-
-setState(() {
-  uid= FirebaseAuth.instance.currentUser!.uid;
-});
-
     if (widget.isAdvisor) {
       advUID = uid;
       stuUID = widget.otherUserUid;
     } else {
-      setState(() {
-        advUID = widget.otherUserUid;
-        stuUID = uid;
-      });
-      
+      advUID = widget.otherUserUid;
+      stuUID = uid;
     }
   }
 
@@ -73,20 +72,12 @@ setState(() {
         }
       }
     } else {
-      //if i am a student
-      String uidAdv="";
       await for (var snapshot in _firestore
-          .collection("students")
-          .where("uid", isEqualTo: uid)
+          .collection("academic_advisors")
+          .where("uid", isEqualTo: advUID)
           .snapshots()) {
-        for (var  student in snapshot.docs) {
-          uidAdv= student.get('AdvisorUID');
-          advUID=uidAdv;
-        }
-        await for(var snapshot in _firestore.collection("academic_advisors").where("uid",isEqualTo: uidAdv).snapshots()){
-for(var adv in snapshot.docs){
-return adv.get("name");
-}
+        for (var advisor in snapshot.docs) {
+          return advisor.get('name');
         }
       }
     }
@@ -98,30 +89,6 @@ return adv.get("name");
     super.initState();
     setting();
     getName();
-
-if (widget.isAdvisor) {
-      // Perform the query to find the document with uid "sfggolede"
-      _firestore
-          .collection('chat')
-          .where('adv_uid', isEqualTo: uid).where('stu_uid',isEqualTo:stuUID)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          // Update the document with msg_num = 0
-          doc.reference.update({
-            'msg_num': 0,
-          }).then((_) {
-            print('Document updated successfully');
-          }).catchError((error) {
-            print('Error updating document: $error');
-          });
-        });
-      }).catchError((error) {
-        print('Error getting documents: $error');
-      });
-    }
-
-
   }
 
   Future<String?> uploadImageToFirebase(XFile imageFile) async {
@@ -152,11 +119,6 @@ if (widget.isAdvisor) {
         'type': "image",
         'uid': uid,
         'addtime': FieldValue.serverTimestamp(),
-      });
-      await chatDocument.reference.update({
-        'last_time': new DateTime.now(),
-        'last_msg': "صورة",
-         'msg_num': widget.isStudent ? chatDocument.get('msg_num') + 1 : 0,
       });
       print('Image URL saved to Firestore');
     } catch (e) {
@@ -205,7 +167,6 @@ if (widget.isAdvisor) {
                       InkWell(
                         onTap: () async {
                           final ImagePicker _picker = ImagePicker();
-                          Navigator.pop(context);
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.camera);
 
@@ -214,8 +175,9 @@ if (widget.isAdvisor) {
                                 await uploadImageToFirebase(image);
                             if (imageURL != null) {
                               await saveImageToFirestore(imageURL);
-                              
                             }
+                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                           }
                         },
                         child: Icon(
@@ -230,18 +192,16 @@ if (widget.isAdvisor) {
                       InkWell(
                         onTap: () async {
                           final ImagePicker _picker = ImagePicker();
-                          Navigator.pop(context);
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.gallery);
                           if (image != null) {
-                             
                             String? imageURL =
                                 await uploadImageToFirebase(image);
                             if (imageURL != null) {
                               await saveImageToFirestore(imageURL);
                             }
-                           
-                           
+                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                           }
                         },
                         child: const Icon(
@@ -325,27 +285,20 @@ if (widget.isAdvisor) {
                       onPressed: () {
                         if (!(messageText == "" ||
                             messageText == null ||
-                            messageText == " ")
-                            ){
-                            
-                            
-                            
-                             if (chatDocument == null) {
+                            messageText == " ")) if (chatDocument == null) {
                           DocumentReference newDocRef =
                               _firestore.collection("chat").doc();
                           newDocRef.set({
                             'last_msg': messageText,
-                            
+                            'msg_num': 1,
                             'last_time': new DateTime.now(),
                             'adv_uid': advUID,
                             'stu_uid': stuUID,
-                            'msg_num':widget.isStudent?1:0,
                           });
                         }
                         chatDocument.reference.update({
                           'last_time': new DateTime.now(),
                           'last_msg': messageText,
-                          'msg_num':widget.isStudent?chatDocument.get('msg_num')+1:0,
                         });
                         chatDocument.reference.collection("msglist").add({
                           'content': messageText,
@@ -361,7 +314,7 @@ if (widget.isAdvisor) {
                             currentFocus.unfocus();
                           }
                         });
-                      }},
+                      },
                       icon: Icon(Icons.send),
                       color: const Color.fromRGBO(55, 94, 152, 1),
                     ),
@@ -377,26 +330,14 @@ if (widget.isAdvisor) {
 }
 
 class MesssageLine extends StatelessWidget {
-   const MesssageLine(
-      {this.content,
-      required this.isMe,
-      required this.type,
-      required this.time,
-      Key? key})
+  const MesssageLine({this.text, required this.isMe, Key? key})
       : super(key: key);
-  final String? content;
-  final String type;
+  final String? text;
+
   final bool isMe;
-    final Timestamp time;
 
   @override
   Widget build(BuildContext context) {
-    String formattedDateTime="";
-    
-        DateTime dateTime = time.toDate();
-        formattedDateTime =
-            intl.DateFormat('yyyy-MM-dd hh:mm a', 'ar').format(dateTime);
-   
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -407,8 +348,8 @@ class MesssageLine extends StatelessWidget {
             elevation: 5,
             borderRadius: isMe
                 ? BorderRadius.only(
-                    topLeft: const Radius.circular(30),
-                    bottomLeft:const Radius.circular(30),
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30))
                 : BorderRadius.only(
                     topRight: Radius.circular(30),
@@ -416,43 +357,11 @@ class MesssageLine extends StatelessWidget {
                     bottomRight: Radius.circular(30)),
             color: isMe ? Colors.blue[800] : Colors.white,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Column(
-                crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-                children: [
-                 GestureDetector(
-                    onTap: () {
-                      if (type == 'image' && content != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                FullScreenImage(imageUrl: content!),
-                          ),
-                        );
-                      }
-                    },
-                    child: content != null && type == 'image'
-                        ? Image.network(
-                            content!,
-                            width: 200, // Adjust width as needed
-                            height: 200, // Adjust height as needed
-                          )
-                        : Text(
-                            "$content ",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: isMe ? Colors.white : Colors.black),
-                          ),
-                  ),
-                  Text(
-                    "$formattedDateTime ",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: isMe ? Colors.white : Colors.black),
-                  ),
-                ],
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Text(
+                "$text ",
+                style: TextStyle(
+                    fontSize: 15, color: isMe ? Colors.white : Colors.black),
               ),
             ),
           ),
@@ -461,6 +370,46 @@ class MesssageLine extends StatelessWidget {
     );
   }
 }
+
+// class MessageStreamBuilder extends StatelessWidget {
+//   const MessageStreamBuilder({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<QuerySnapshot>(
+//         stream:
+//             _firestore.collection("chat").snapshots(),
+//         builder: (context, snapshot) {
+//           List<MesssageLine> messageWidgets = [];
+//           if (!snapshot.hasData) {
+// //add here spinner
+//             return const Center(
+//               child: CircularProgressIndicator(backgroundColor: Colors.blue),
+//             );
+//           }
+//           final messages = snapshot.data!.docs.reversed;
+//           for (var message in messages) {
+//             final messageText = message.get('content');
+//             final meesageSenderUid = message.get('uid');
+//             final currentUser = uid;
+
+//             final messgeWidget = MesssageLine(
+//               text: messageText,
+//               isMe: currentUser == meesageSenderUid,
+//             );
+
+//             messageWidgets.add(messgeWidget);
+//           }
+//           return Expanded(
+//             child: ListView(
+//               reverse: true,
+//               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+//               children: messageWidgets,
+//             ),
+//           );
+//         });
+//   }
+// }
 
 class MessageListBuilder extends StatelessWidget {
   final DocumentSnapshot chatDoc;
@@ -477,8 +426,7 @@ class MessageListBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         List<MesssageLine> messageWidgets = [];
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center();
-          // return CircularProgressIndicator();
+          return CircularProgressIndicator();
         }
         if (/*!snapshot.hasData || */ snapshot.data!.docs.isEmpty) {
           return Expanded(
@@ -492,15 +440,10 @@ class MessageListBuilder extends StatelessWidget {
         for (var message in messages) {
           final messageText = message.get('content');
           final meesageSenderUid = message.get('uid');
-          final type = message.get('type');
-          final Timestamp? addtime = message.get('addtime') as Timestamp?;
-
           final currentUser = uid;
 
           final messgeWidget = MesssageLine(
-            content: messageText,
-            type: type,
-            time: addtime?? Timestamp.now(),
+            text: messageText,
             isMe: currentUser == meesageSenderUid,
           );
 
@@ -531,7 +474,6 @@ class MessageStreamBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            
             child: CircularProgressIndicator(backgroundColor: Colors.blue),
           );
         }
@@ -565,23 +507,6 @@ class MessageStreamBuilder extends StatelessWidget {
         chatDocument = chatDocs[0];
         return MessageListBuilder(chatDoc: chatDocs[0]);
       },
-    );
-  }
-}
-class FullScreenImage extends StatelessWidget {
-  final String imageUrl;
-  const FullScreenImage({required this.imageUrl});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Image.network(imageUrl),
-        ),
-      ),
     );
   }
 }

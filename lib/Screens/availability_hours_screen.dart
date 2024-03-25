@@ -29,8 +29,37 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
         serviceName: '',
         serviceDuration: 60, //one hour per reservation
         bookingEnd: DateTime(now.year, now.month, now.day, 18 , ), // booking starts from 8AM till 5PM where 6Pm will be the end of the last advising session
-        bookingStart: DateTime(now.year, now.month, now.day, 08,));
+        bookingStart: DateTime(now.year, now.month, now.day, 08,), 
+      );
+       
   }
+  
+  showAlert(BuildContext context, String msg) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text('تنبيه', textAlign: TextAlign.end,),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children:  <Widget>[
+                Text(msg, textAlign: TextAlign.end,),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('تم'),
+            ),
+             
+          ],
+        );
+      },
+    );
+  }
+
 
   Stream<dynamic>? getBookingStreamMock(
       {required DateTime end, required DateTime start}) {
@@ -40,13 +69,23 @@ class _AvailabilityHoursScreenState extends State<AvailabilityHoursScreen> {
 
   Future<dynamic> uploadBookingMock(
       {required BookingService newBooking}) async {
+
     Map<String,dynamic> a =newBooking.toJson();
     a.removeWhere((key, value) => (value==null||value=='')); //delete empty/NULL
-   await db.collection('AvailabilityHours').add(a);
+    DocumentReference docRef = await db.collection('AvailabilityHours').add(a);
     if (kDebugMode) {
       print('${a.toString()} has been uploaded');
-    }
-    showSnackBar(context,'تم حجز الموعد بنجاح');//massage
+    } 
+    FirebaseFirestore.instance.collection('AvailabilityHours')
+    .doc(docRef.id)
+      .set({
+          'id': docRef.id,
+          'status': 0
+        },SetOptions(merge: true)).then((value){
+      //Do your stuff.
+    });
+    //showSnackBar(context,'تم حجز الموعد بنجاح');//massage
+    showAlert(context,'تم حجز الموعد بنجاح');
   }
 
 

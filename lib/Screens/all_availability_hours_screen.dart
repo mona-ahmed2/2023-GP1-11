@@ -20,7 +20,7 @@ class _AllAvailabilityHoursScreenState
   final now = DateTime.now();
   late BookingService mockBookingService;
   String uid = FirebaseAuth.instance.currentUser!.uid;
-  final db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance; 
   @override
   void initState() {
     super.initState();
@@ -44,6 +44,31 @@ class _AllAvailabilityHoursScreenState
         ));
   }
 
+  showAlert(BuildContext context, String msg) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('تنبيه', textAlign: TextAlign.end,),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children:  <Widget>[
+                Text(msg, textAlign: TextAlign.end,),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('OK'),
+            ),
+             
+          ],
+        );
+      },
+    );
+  }
   Stream<dynamic>? getBookingStreamMock() {
     final snapshot = db //getting from the firebase database
         .collection('AvailabilityHours')
@@ -104,14 +129,26 @@ class _AllAvailabilityHoursScreenState
                   List<DateTimeRange> converted = [];
                   for (var i = 0; i < snapshot.data.size; i++) {
                     final item = snapshot.data.docs[i].data();
-                    converted.add(DateTimeRange(
-                        start: DateTime.parse(item['bookingStart']),
-                        end: DateTime.parse(item['bookingEnd'])));
-                  }
+                    final now = DateTime.now();
+                    final startDate = DateTime.parse(item['bookingStart']);
+                    if(!startDate.isBefore(now))
+                    { 
+                      converted.add(DateTimeRange(
+                          start: DateTime.parse(item['bookingStart']),
+                          end: DateTime.parse(item['bookingEnd'])));
+                    }
+                  } 
+                  /*
                   converted.sort((a,b) {
                     return a.start.compareTo(b.start);
                   });
-                  return ListView(
+                  */
+                  return converted.length == 0?
+                      Container(
+                        child: Center(
+                          child:  Text("لا يوجد مواعيد متاحة", style: TextStyle(fontSize: 18),)),
+                      )
+                    : ListView(
                       children: converted
                           .map((e) => 
                           Container(
@@ -143,13 +180,26 @@ class _AllAvailabilityHoursScreenState
                                     Spacer(),
                                     IconButton(onPressed: ()async{
                                       String docId='';
+                                      int status=0;
                                       final FirebaseAuth auth = FirebaseAuth.instance;
                                       final String? id = auth.currentUser?.uid;
                                       String a = e.start.toString();
                                       a=a.replaceFirst(' ', 'T');
                                       print(e.start.toString());
-                                      await FirebaseFirestore.instance.collection("AvailabilityHours").where('bookingStart',isEqualTo: a).get().then((value) =>print(docId = value.docs.first.reference.id));
-                                      await FirebaseFirestore.instance.collection('AvailabilityHours').doc(docId).delete();
+                                      await FirebaseFirestore.instance.collection("AvailabilityHours").where('bookingStart',isEqualTo: a).get().then(
+                                              (value) => value.docs.forEach((doc) {
+                                                docId = doc.get("id");
+                                                status = doc.get("status");
+                                              }
+                                          )
+                                        );
+                                        if(status==0){ 
+                                           await FirebaseFirestore.instance.collection('AvailabilityHours').doc(docId).delete();
+                                          
+                                           showAlert(context, "تم حذف الموعد بنجاح");
+                                        }else{
+                                          showAlert(context, "لا يمكن حذف هذا الموعد لارتباطه بحجز");
+                                        }
 
                                     }, icon: Icon(Icons.delete_outline,color: Colors.red,)),//trashIcon for deleting
                                   ],

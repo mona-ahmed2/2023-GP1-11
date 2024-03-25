@@ -1,12 +1,21 @@
+/*
+
+
+Removed Class
+
+*/
+
 import 'package:flutter/material.dart';
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 import 'package:wjjhni/onlineChatting/chat_tile.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 
-String uid = FirebaseAuth.instance.currentUser!.uid;
+import '../widgets/note_title.dart'; 
+
+String adv_uid = FirebaseAuth.instance.currentUser!.uid;
 final db = FirebaseFirestore.instance;
 ScrollController scrollController = ScrollController();
 List<String> names = [];
@@ -15,7 +24,7 @@ List<String> searchResults = [];
 void getNames() async {
   await for (var snapshot in db
       .collection("students")
-      .where('AdvisorUID', isEqualTo: uid)
+      .where('AdvisorUID', isEqualTo: adv_uid)
       .snapshots()) {
     for (var student in snapshot.docs) {
       if (!name.contains(student.get("name"))) {
@@ -26,14 +35,16 @@ void getNames() async {
   searchResults = names;
 }
 
-class ChatWidget extends StatefulWidget {
-  const ChatWidget({super.key});
+class AddNote_ListStudents_Screen extends StatefulWidget {
+  const AddNote_ListStudents_Screen({super.key});
 
   @override
-  State<ChatWidget> createState() => _ChatWidgetState();
+  State<AddNote_ListStudents_Screen> createState() => _AddNote_ListStudents_Screen_State();
 }
 
-class _ChatWidgetState extends State<ChatWidget> {
+class _AddNote_ListStudents_Screen_State extends State<AddNote_ListStudents_Screen> {
+  String nameFilter = ""; 
+  /*
   void StudentsStream() async {
     setState(() async {
       await for (var snapshot in db
@@ -45,7 +56,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         }
       }
     });
-  }
+  }*/
 
   TextEditingController editingController = TextEditingController();
 
@@ -70,44 +81,55 @@ class _ChatWidgetState extends State<ChatWidget> {
         searchResults = names
             .where((item) => item.toLowerCase().contains(query.toLowerCase()))
             .toList();
-      });
+      }); 
     }
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                child: TextField(
-                  onChanged: (value) {
-                    filterSearchResults(value);
-                    // print(getStudentsStream());
-                  },
-                  controller: editingController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: 'بحث بالاسم',
-                    border: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(16.0))),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        print(names.length);
-                      },
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+        title: Text("اضافة ملاحظة"),
+        centerTitle: true,
+      ),
+      body:
+        Directionality(
+        textDirection: TextDirection.rtl,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: TextField(
+                    onChanged: (value) {
+                      filterSearchResults(value);
+                      setState(() {
+                        nameFilter = value;
+                      });
+                      print(value);
+                    },
+                    controller: editingController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: 'بحث بالاسم',
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(16.0))),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          filterSearchResults(nameFilter);
+                          print(names.length);
+                        },
+                      ),
                     ),
                   ),
                 ),
-              ),
-              MessageStreamBuilder(),
-            ],
+                MessageStreamBuilder(),
+              ],
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 }
@@ -123,7 +145,7 @@ class MessageStreamBuilder extends StatelessWidget {
             .where('AdvisorUID', isEqualTo: uid)
             .snapshots(),
         builder: (context, snapshot) {
-          List<ChatTile> chatTiles = [];
+          List<NoteTile> noteTiles = [];
           if (!snapshot.hasData) {
             //add here spinner
 
@@ -136,52 +158,35 @@ class MessageStreamBuilder extends StatelessWidget {
           
           // .where((student) => searchResults.contains(student.get('name')));
 
-          for (var student in students) {
-            // final String name;
-            // final String id;
-            // final String msg;
-            // final String time;
+          for (var student in students) { 
             final name = student.get('name');
             final id = student.get('id');
-            final uid = student.get('uid');
+            final stud_uid = student.get('uid');
             
 
-            final chatTile = ChatTile(
+            final noteTile = NoteTile(
               name: name,
               id: id,
               msg: "",
-              time: "6 صباحا",
-              uid: uid,
+              time: "",
+              uid: stud_uid,
+              adv_uid: adv_uid,
             );
             if (!names.contains(name)) {
               names.add(name);
             }
 
-            chatTiles.add(chatTile);
+            noteTiles.add(noteTile);
           }
           return ListView(
             physics: NeverScrollableScrollPhysics(),
             controller: scrollController,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            children: chatTiles,
+            children: noteTiles,
           );
         });
   }
-
-  Future<String> getLastMessgeInfo(String uid) async {
-    await for (var snapshot
-        in db.collection("chat").where("stu_uid", isEqualTo: uid).snapshots()) {
-     
-      for (var chat in snapshot.docs) {
-        return chat.get('last_msg');
-   
-      }
-     
-    }
-   return "";
-  }
+ 
 }
-
-
 

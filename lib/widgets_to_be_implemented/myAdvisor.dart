@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:wjjhni/Screens_to_be_implemented/all_appointments.dart';
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
@@ -8,10 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../Screens_to_be_implemented/stud_booked_appointments.dart';
 final _auth = FirebaseAuth.instance;
 String uid = FirebaseAuth.instance.currentUser!.uid;
 final _firestore = FirebaseFirestore.instance;
-String advuid = "";
+  String advUID = ""; 
+
 
 class MyAdvisor extends StatefulWidget {
   const MyAdvisor({super.key});
@@ -21,58 +25,56 @@ class MyAdvisor extends StatefulWidget {
 }
 
 class _MyAdvisorState extends State<MyAdvisor> {
+  
+  bool isRatingActive = false;
   static final List<String> titles = [
     "محادثة مرشدتي",
     "حجز موعد",
-    "مواعيدي مع مرشدتي",
-    "تقييم مرشدتي"
+    "مواعيدي مع مرشدتي" 
   ];
 
   static final List<IconData> icons = [
     Icons.chat_rounded,
     Icons.add,
     Icons.calendar_month,
-    Icons.stars,
   ];
 
-//   void getAdvisorUID() async {
-//     await for (var snapshot in _firestore.collection("students").where('uid',isEqualTo: uid).snapshots()) {
-//       for (var student in snapshot.docs) {
-// setState(() {
-//    advUID = student.get('AdvisorUID');
-// });
-       
-//       }
-//     }
-//   }
-
-void getAdvisorUID() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
-          .collection('students')
-          .where('uid', isEqualTo: uid)
-          .get();
-
-      // Check if there's any data returned
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          advUID = querySnapshot.docs.first.get('AdvisorUID');
-        });
-      }
-    } catch (e) {
-      // Handle error if query fails
-      print('Error retrieving AdvisorUID: $e');
-    }
+   
+  
+  Future<void>? getRatingActivation() async{  
+     await _firestore  
+        .collection('rating_activation').doc('activationDocument').get().then((value) {
+            
+                if(value["isActive"] == "true")
+                {
+                  setState(() {
+                    isRatingActive = true;
+                    if(!titles.contains("تقييم مرشدتي")){
+                      titles.add("تقييم مرشدتي");
+                      icons.add(Icons.stars); 
+                    }
+                    
+                  });
+                }
+          });  
   }
 
-  
+void getAdvisorUID() async { 
 
+      await for (var snapshot in _firestore.collection("students") .where('uid', isEqualTo: uid).snapshots()) {
+        for (var student in snapshot.docs) {
+          setState(() {
+            advUID=student.get('AdvisorUID');
+          }); 
+        }
+      }
+    
     // try {
     //   QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
     //       .collection(
-    //           'students')
+    //           'students') 
     //       .where('uid',
-    //           isEqualTo: uid)
+    //           isEqualTo: uid) 
     //       .get();
     //        Map<String, dynamic> data = querySnapshot.docs.first.data();
     //   advuid = data['AdvisorUID'];
@@ -83,42 +85,23 @@ void getAdvisorUID() async {
     //   print('Error retrieving AdvisorUID: $e');
     //   return null;
     // }
-  
-
-
-  
-
-  @override
-  void initState() {
-     super.initState();
-     getAdvisorUID();
-   
+  }
+@override
+void initState() {
+    getRatingActivation();
+     getAdvisorUID();     
+    super.initState();
    
   }
-
-  
+  late List<Widget> links = [
+    ChatDialouge(otherUserUid: advUID,isAdvisor: false,isStudent: true,),
+    BooKAppointment(advisorUid:advUID),
+    StudBookedAppointments(),
+    RateScreen(advisorUid:advUID),
+  ];
 
   @override
   Widget build(BuildContext context) {
-   
-    setState(() {
-      getAdvisorUID();
-      
-    });
-    List<Widget> links= [];
-   
- links = [
-        ChatDialouge(
-          otherUserUid: advuid,
-          isAdvisor: false,
-          isStudent: true,
-        ),
-        BooKAppointment(),
-        AllAppointments(),
-        RateScreen(),
-      ];
-    
-    
     return ListView.builder(
       padding: EdgeInsets.all(8),
       scrollDirection: Axis.vertical,
@@ -128,11 +111,10 @@ void getAdvisorUID() async {
           padding: EdgeInsets.all(8.0),
           height: 100,
           child: InkWell(
-            onTap: () async {
-              getAdvisorUID();
-              print("$advUID +adv uid");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => links[index]));
+            onTap :  () async {
+              
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => links[index]));
             },
             child: Card(
               child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [

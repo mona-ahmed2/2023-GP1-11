@@ -20,19 +20,21 @@ class MyApp extends StatelessWidget {//main application
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(//user interfaces in response to changes in the authentication state
-        stream: FirebaseAuth.instance.userChanges(),// method to listen to changes in the user authentication state
-        builder: (context, snapshot) {
-          if(snapshot.hasData && snapshot.data!=null){
+    return Directionality(textDirection: TextDirection.rtl,
+     child:   MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: StreamBuilder<User?>(//user interfaces in response to changes in the authentication state
+          stream: FirebaseAuth.instance.userChanges(),// method to listen to changes in the user authentication state
+          builder: (context, snapshot) {
+            if(snapshot.hasData && snapshot.data!=null){
 
-          return const HomeScreen();//home screen if the user is authenticated
-          }else if(snapshot.connectionState == ConnectionState.waiting){
-            return const SplashScreen();//splash screen while the app is waiting
-        }
-          return const EmailPasswordLogin();//login screen if the user is not authenticated
-        }
+            return const HomeScreen();//home screen if the user is authenticated
+            }else if(snapshot.connectionState == ConnectionState.waiting){
+              return const SplashScreen();//splash screen while the app is waiting
+          }
+            return const EmailPasswordLogin();//login screen if the user is not authenticated
+          }
+        ),
       ),
     );
   }
