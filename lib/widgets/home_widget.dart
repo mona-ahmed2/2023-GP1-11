@@ -74,8 +74,8 @@ class _HomeWidgetState extends State<HomeWidget> {
   // ];
 
   final FirebaseService _firebaseService = FirebaseService();
-  List<CustomNotificationCard> _listOfNotification = [];
-
+  List<CustomNotificationCard> _listGeneralOfNotification = [];
+  List<CustomNotificationCard> _listSpecificfNotification = [];
   @override
   void initState() {
     super.initState();
@@ -84,10 +84,11 @@ class _HomeWidgetState extends State<HomeWidget> {
 
 
   Future<void> _loadNotifications() async {
+   //get general notifivations
     print("Loading notifications...");
     List<CustomeNotification> notifications =
-        await _firebaseService.fetchNotifications();
-    print("Notifications loaded: $notifications");
+        await _firebaseService.fetchGeneralNotifications();
+     print("Notifications loaded: $notifications");
     List<CustomNotificationCard> notificationCards =
         notifications.map((notification) {
       return CustomNotificationCard(
@@ -102,8 +103,28 @@ class _HomeWidgetState extends State<HomeWidget> {
       );
     }).toList();
 
+
+    List<CustomeNotification> notifications2 =
+        await _firebaseService.fetchSpeNotifications();
+
+    List<CustomNotificationCard> notificationCards2 =
+        notifications2.map((notification2) {
+      return CustomNotificationCard(
+        date: notification2.date,
+        leading: Icon(
+          Icons.notifications,
+          size: 32,
+        ),
+        title: notification2.title,
+        subtitle: notification2.message +
+            "\n" +
+            DateFormat('MMM d, yyyy h:mm a').format(notification2.date),
+      );
+    }).toList();
+
     setState(() {
-      _listOfNotification = notificationCards;
+      _listGeneralOfNotification = notificationCards;
+      _listSpecificfNotification=notificationCards2;
     });
   }
 
@@ -112,7 +133,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     List<NotificationCard> notificationCards =
-        _listOfNotification.map((customNotificationCard) {
+        _listGeneralOfNotification.map((customNotificationCard) {
       return NotificationCard(
         date: customNotificationCard.date,
         leading: customNotificationCard.leading,
@@ -120,6 +141,20 @@ class _HomeWidgetState extends State<HomeWidget> {
         subtitle: customNotificationCard.subtitle,
       );
     }).toList();
+
+     List<NotificationCard> notificationCards2 =
+        _listSpecificfNotification.map((customNotificationCard) {
+      return NotificationCard(
+        date: customNotificationCard.date,
+        leading: customNotificationCard.leading,
+        title: customNotificationCard.title,
+        subtitle: customNotificationCard.subtitle,
+      );
+    }).toList();
+
+
+
+
     return Directionality(
       textDirection:  ui.TextDirection.rtl,
       child: SafeArea(
@@ -173,31 +208,30 @@ class _HomeWidgetState extends State<HomeWidget> {
                     print(index);
                   },
                 ),
-                StackedNotificationCards(
+                 StackedNotificationCards(
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.25),
                       blurRadius: 2.0,
                     )
                   ],
-                  notificationCardTitle: 'Message',
-                  
-                  notificationCards: [...notificationCards],
+                  notificationCardTitle: 'تنبيه',
+                  notificationCards: [...notificationCards2],  
                   cardColor: Color(0xFFF1F1F1),
                   padding: 16,
                   actionTitle: Text(
-                    'Notifications',
+                    ' التنبيهات الخاصة بي',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   showLessAction: Text(
-                    'Show less',
+                    'إظهار أقل',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.blue,
                     ),
                   ),
                   onTapClearAll: () {
@@ -206,9 +240,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                     });
                   },
                   clearAllNotificationsAction: Icon(Icons.close),
-                  clearAllStacked: Text(''),
-                  cardClearButton: Text(''),
-                  cardViewButton: Text(''),
+                  clearAllStacked: Text('Clear All'),
+                  cardClearButton: Text('clear'),
+                  cardViewButton: Text('view'),
                   onTapClearCallback: (index) {
                     print(index);
                     setState(() {
@@ -219,6 +253,53 @@ class _HomeWidgetState extends State<HomeWidget> {
                     print(index);
                   },
                 ),
+                 StackedNotificationCards(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 2.0,
+                    )
+                  ],
+                  notificationCardTitle: 'تنبيه',
+                  notificationCards: [...notificationCards],
+                  cardColor: Color(0xFFF1F1F1),
+                  padding: 16,
+                  actionTitle: Text(
+                    'تنبيهات الرسائل',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  showLessAction: Text(
+                    'إظهار أقل',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  onTapClearAll: () {
+                    setState(() {
+                      // _listOfNotification.clear();
+                    });
+                  },
+                  clearAllNotificationsAction: Icon(Icons.close),
+                  clearAllStacked: Text('Clear All'),
+                  cardClearButton: Text('clear'),
+                  cardViewButton: Text('view'),
+                  onTapClearCallback: (index) {
+                    print(index);
+                    setState(() {
+                      // _listOfNotification.removeAt(index);
+                    });
+                  },
+                  onTapViewCallback: (index) {
+                    print(index);
+                  },
+                ),
+            
+
               ],
             ),
           ),
