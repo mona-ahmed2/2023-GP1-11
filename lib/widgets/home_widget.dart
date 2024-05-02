@@ -8,7 +8,6 @@ import 'package:wjjhni/notifictions/custome_cards.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
-
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
 
@@ -76,19 +75,20 @@ class _HomeWidgetState extends State<HomeWidget> {
   final FirebaseService _firebaseService = FirebaseService();
   List<CustomNotificationCard> _listGeneralOfNotification = [];
   List<CustomNotificationCard> _listSpecificfNotification = [];
+  List<CustomNotificationCard> _listMessageNotification = [];
+
   @override
   void initState() {
     super.initState();
     _loadNotifications();
   }
 
-
   Future<void> _loadNotifications() async {
-   //get general notifivations
+    //get general notifivations
     print("Loading notifications...");
     List<CustomeNotification> notifications =
         await _firebaseService.fetchGeneralNotifications();
-     print("Notifications loaded: $notifications");
+    print("Notifications loaded: $notifications");
     List<CustomNotificationCard> notificationCards =
         notifications.map((notification) {
       return CustomNotificationCard(
@@ -98,11 +98,11 @@ class _HomeWidgetState extends State<HomeWidget> {
           size: 32,
         ),
         title: notification.title,
-        subtitle: notification.message+"\n"+
+        subtitle: notification.message +
+            "\n" +
             DateFormat('MMM d, yyyy h:mm a').format(notification.date),
       );
     }).toList();
-
 
     List<CustomeNotification> notifications2 =
         await _firebaseService.fetchSpeNotifications();
@@ -122,13 +122,30 @@ class _HomeWidgetState extends State<HomeWidget> {
       );
     }).toList();
 
+    List<CustomeNotification> notifications3 =
+        await _firebaseService.fetchMessageNotifications();
+
+    List<CustomNotificationCard> notificationCards3 =
+        notifications3.map((notification3) {
+      return CustomNotificationCard(
+        date: notification3.date,
+        leading: Icon(
+          Icons.notifications,
+          size: 32,
+        ),
+        title: notification3.title,
+        subtitle: notification3.message +
+            "\n" +
+            DateFormat('MMM d, yyyy h:mm a').format(notification3.date),
+      );
+    }).toList();
+
     setState(() {
       _listGeneralOfNotification = notificationCards;
-      _listSpecificfNotification=notificationCards2;
+      _listSpecificfNotification = notificationCards2;
+      _listMessageNotification = notificationCards3;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +159,18 @@ class _HomeWidgetState extends State<HomeWidget> {
       );
     }).toList();
 
-     List<NotificationCard> notificationCards2 =
+    List<NotificationCard> notificationCards2 =
         _listSpecificfNotification.map((customNotificationCard) {
+      return NotificationCard(
+        date: customNotificationCard.date,
+        leading: customNotificationCard.leading,
+        title: customNotificationCard.title,
+        subtitle: customNotificationCard.subtitle,
+      );
+    }).toList();
+
+List<NotificationCard> notificationCards3 =
+        _listMessageNotification.map((customNotificationCard) {
       return NotificationCard(
         date: customNotificationCard.date,
         leading: customNotificationCard.leading,
@@ -156,7 +183,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
 
     return Directionality(
-      textDirection:  ui.TextDirection.rtl,
+      textDirection: ui.TextDirection.rtl,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -208,7 +235,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     print(index);
                   },
                 ),
-                 StackedNotificationCards(
+                StackedNotificationCards(
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.25),
@@ -216,7 +243,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     )
                   ],
                   notificationCardTitle: 'تنبيه',
-                  notificationCards: [...notificationCards2],  
+                  notificationCards: [...notificationCards2],
                   cardColor: Color(0xFFF1F1F1),
                   padding: 16,
                   actionTitle: Text(
@@ -253,7 +280,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     print(index);
                   },
                 ),
-                 StackedNotificationCards(
+                StackedNotificationCards(
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.25),
@@ -261,7 +288,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     )
                   ],
                   notificationCardTitle: 'تنبيه',
-                  notificationCards: [...notificationCards],
+                  notificationCards: [...notificationCards3],
                   cardColor: Color(0xFFF1F1F1),
                   padding: 16,
                   actionTitle: Text(
@@ -298,8 +325,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                     print(index);
                   },
                 ),
-            
-
               ],
             ),
           ),

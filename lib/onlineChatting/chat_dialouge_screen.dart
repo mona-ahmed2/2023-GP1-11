@@ -120,6 +120,29 @@ class _ChatDialougeState extends State<ChatDialouge> {
         print('Error getting documents: $error');
       });
     }
+    if (widget.isStudent) {
+      // Perform the query to find the document with uid "sfggolede"
+      _firestore
+          .collection('chat')
+          .where('stu_uid', isEqualTo: uid)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          // Update the document with msg_num = 0
+          doc.reference.update({
+            'msg_num_stu': 0,
+          }).then((_) {
+            print('Document updated successfully');
+          }).catchError((error) {
+            print('Error updating document: $error');
+          });
+        });
+      }).catchError((error) {
+        print('Error getting documents: $error');
+      });
+    }
+
+
   }
 
   Future<String?> uploadImageToFirebase(XFile imageFile) async {
@@ -329,6 +352,7 @@ class _ChatDialougeState extends State<ChatDialouge> {
                               'adv_uid': advUID,
                               'stu_uid': stuUID,
                               'msg_num': widget.isStudent ? 1 : 0,
+                              'msg_num_stu': widget.isAdvisor ? 1 : 0,
                             });
                           }
                           chatDocument.reference.update({
@@ -337,6 +361,10 @@ class _ChatDialougeState extends State<ChatDialouge> {
                             'msg_num': widget.isStudent
                                 ? chatDocument.get('msg_num') + 1
                                 : 0,
+'msg_num_stu': widget.isAdvisor
+                                ? chatDocument.get('msg_num_stu') + 1
+                                : 0,
+
                           });
                           chatDocument.reference.collection("msglist").add({
                             'content': messageText,
@@ -535,6 +563,7 @@ class MessageStreamBuilder extends StatelessWidget {
             'last_time': new DateTime.now(),
             'adv_uid': advUID,
             'stu_uid': stuUID,
+            'msg_num_stu':0,
           });
 
           return Expanded(
