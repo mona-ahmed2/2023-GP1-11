@@ -4,9 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:math' as math;
+
 import 'package:wjjhni/Chatbot/message.dart';
 import 'package:wjjhni/Chatbot/chatbot_service.dart';
+
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -33,6 +34,19 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   ScrollController scrollController = ScrollController();
   List<Message> msgs = [];
   bool isTyping = false;
+
+
+
+   @override
+  void initState() {
+    super.initState();
+    msgs.add(Message(
+                      false," مرحبا بك,\n أنا مساعدك الشخصي للإجابة عن استفساراتك الأكاديمية ومساعدتك نحو التقدم والنجاح الأكاديمي" )
+                 
+                );
+                
+  }
+
 /* -------------------------------------------------------------
 
 this method for sending question and receiving chatbot answer @ibtihalx
@@ -82,7 +96,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: BubbleNormal(
-                    text: 'يكتب ..',
+                    text: 'يكتب',
                     isSender: false,
                     color: Colors.grey.shade200,
                   ),
@@ -122,7 +136,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
                 controller: messageControler,
                 textAlign: TextAlign.right,
                 decoration: const InputDecoration(
-                  hintText: "أدخل رسالتك",
+                  hintText: "أدخل سؤالك",
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   enabledBorder: InputBorder.none,
@@ -136,16 +150,8 @@ this method for sending question and receiving chatbot answer @ibtihalx
                 ),
               ),
             ),
-            leading: IconButton(
-              icon: Transform.rotate(
-                angle: 180 * math.pi / 180,
-                child: const Icon(
-                  Icons.send,
-                  size: 32,
-                  color: Colors.black38,
-                ),
-              ),
-              onPressed: () {
+            leading: InkWell(
+              onTap: () {
                 if (messageControler.text.isEmpty) {
                   if (kDebugMode) {
                     print("empty message");
@@ -162,7 +168,43 @@ this method for sending question and receiving chatbot answer @ibtihalx
                   currentFocus.unfocus();
                 }
               },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                
+                  child: Image.asset(
+                  'assets/icons8-chatbot-100.png', // Path to your PNG file
+                  width: 36,
+                  height: 42,
+                ),
+              ),
             ),
+            // leading: IconButton(
+            //   icon: Transform.rotate(
+            //     angle: 180 * math.pi / 180,
+            //     child: const Icon(
+            //       Icons.send,
+            //       size: 32,
+            //       color: Colors.black38,
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     if (messageControler.text.isEmpty) {
+            //       if (kDebugMode) {
+            //         print("empty message");
+            //       }
+            //     } else {
+            //       setState(() {
+            //         msgs.add(Message(true, messageControler.text));
+            //         response(messageControler.text.replaceAll("\n", " "));
+            //         messageControler.clear();
+            //       });
+            //     }
+            //     FocusScopeNode currentFocus = FocusScope.of(context);
+            //     if (!currentFocus.hasPrimaryFocus) {
+            //       currentFocus.unfocus();
+            //     }
+            //   },
+            // ),
           ),
         ),
       ],
