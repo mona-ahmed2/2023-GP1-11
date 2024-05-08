@@ -8,6 +8,7 @@ class AbsentCal extends StatefulWidget {
 }
 
 class _AbsentCalState extends State<AbsentCal> {
+<<<<<<< HEAD
   TextEditingController no_hours_week = TextEditingController();
   TextEditingController no_study_week = TextEditingController();
   double calcResult = 0;
@@ -112,6 +113,17 @@ class _AbsentCalState extends State<AbsentCal> {
           ),
         )
       )
+=======
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+        title: Text("حاسبة ساعات الغياب"),
+        centerTitle: true,
+      ),
+      body: Container(),
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
     );
   }
 }

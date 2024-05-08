@@ -56,9 +56,14 @@ dependencies:
   permission_handler: ^11.0.1
   device_info_plus: ^9.1.2
   syncfusion_flutter_pdfviewer: ^22.2.8
+<<<<<<< HEAD
   string_validator: ^1.0.2
   table_calendar: ^3.0.0
   
+=======
+  stacked_notification_cards: ^0.1.0-dev.5
+
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
 dev_dependencies:
   flutter_test:
     sdk: flutter

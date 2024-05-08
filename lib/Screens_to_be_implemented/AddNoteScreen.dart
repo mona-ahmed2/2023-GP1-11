@@ -28,7 +28,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   String advisorUID = FirebaseAuth.instance.currentUser!.uid;
   String studentID = "";
   String studentName = "";
+<<<<<<< HEAD
   String studentNumber = "";
+=======
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
   final db = FirebaseFirestore.instance;
   
   String selectedCategory = "استشارة أكاديمية";
@@ -50,6 +53,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     ];
     studentID = widget. otherUserUid;
     studentName = widget. studentName;
+<<<<<<< HEAD
     getStudentInfo(studentID)!.then((value) { 
         setState(() {
                 studentNumber  = value;
@@ -72,6 +76,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   }
   
 
+=======
+    super.initState(); 
+  }
+
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
@@ -102,7 +111,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
  
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     
+=======
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
     return WillPopScope(
       onWillPop: () async {
         widget.getNotes();
@@ -122,7 +134,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           padding: EdgeInsets.all(16.0),
           child: Column(
             children: [   
+<<<<<<< HEAD
               Text("اضافة ملاحظة للطالبة ("+studentName+" - "+studentNumber+")", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),         
+=======
+              Text("اضافة ملاحظة للطالبة ("+studentName+")", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),         
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
               SizedBox(height: 16.0),
 
               DropdownButtonFormField(
@@ -165,8 +181,12 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   AdvisorNote obj = AdvisorNote(noteID, category, note, studentID, advisorUID);
                   await FirebaseFirestore.instance.collection('advisor_note').add(obj.toJson()).then((result) {
 
+<<<<<<< HEAD
                                                                         showAlert(context, "تم اضافة الملاحظة بنجاح.\n\n"
                                                                                            +"تنبيه: هذه الملاحظات خاصة بالمرشدة فقط لا تظهر للطالبة او للادمن فقط للمرشد الاكاديمي / لا يمكن معاينتها الا من قبل المرشد");
+=======
+                                                                        showAlert(context, "تم اضافة الملاحظة بنجاح");
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
                                                                         
                                                                       }).catchError((error){
                                                                       
@@ -178,8 +198,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 },
                 child: Text('حفظ'),
               ),
+<<<<<<< HEAD
               SizedBox(height: 16,),
               const Text("تنبيه: هذه الملاحظات خاصة بالمرشدة فقط لا تظهر للطالبة او للادمن فقط للمرشد الاكاديمي / لا يمكن معاينتها الا من قبل المرشد"),
+=======
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
             ],
           ),
         )

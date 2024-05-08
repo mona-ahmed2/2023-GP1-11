@@ -27,6 +27,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) { 
+<<<<<<< HEAD
           return Directionality(textDirection: TextDirection.rtl,
             child: Dialog(
               // The background color
@@ -45,6 +46,24 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                 ),
               ),
             )
+=======
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(msg)
+                ],
+              ),
+            ),
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
           );
         });
   }
@@ -56,6 +75,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
+<<<<<<< HEAD
         return Directionality(textDirection: TextDirection.rtl,
           child: AlertDialog(
             title: const Text('تنبيه', textAlign: TextAlign.end,),
@@ -96,6 +116,46 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
               ),
             ],
           )
+=======
+        return AlertDialog(
+          title: const Text('تنبيه', textAlign: TextAlign.end,),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      isSuccess ? Icons.check_circle : Icons.cancel,
+                      color: isSuccess ? Colors.green : Colors.red,
+                    ),
+                   SizedBox(  
+                      width: MediaQuery.of(context).size.width * 0.60,
+                      height: 60,
+                      child:
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, right: 8),
+                        child:   
+                          Text(
+                           msg ,
+                            style: const TextStyle(  color: Colors.black87, fontSize: 16), 
+                            softWrap: false,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,  
+                          ),
+                      )
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('OK'),
+            ),
+          ],
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
         );
       },
     );

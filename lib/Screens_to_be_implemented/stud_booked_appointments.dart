@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:wjjhni/model/SpecificNote.dart';
+=======
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
 
 import '../model/BookAppointment.dart';
 
@@ -19,7 +22,11 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
   
   List<BookAppointment> booksList = []; 
   List<DateTimeRange> converted = []; 
+<<<<<<< HEAD
   String studentName = "";
+=======
+  
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
@@ -70,10 +77,17 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
               child: const Text('لا'),
             ),
             TextButton(
+<<<<<<< HEAD
               onPressed: () async {  
                 db.collection('booking_appointment') .where('id', isEqualTo: bk.id).get().then(
                                                             (value) => value.docs.forEach((doc) {
                                                              // doc.reference.update({'status': -1});
+=======
+              onPressed: () { 
+                db.collection('booking_appointment') .where('id', isEqualTo: bk.id).get().then(
+                                                            (value) => value.docs.forEach((doc) {
+                                                              //doc.reference.update({'status': -1});
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
                                                               doc.reference.delete();
                                                             }));
                   setState(() {
@@ -82,6 +96,7 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
                   });
                     
                 db.collection('AvailabilityHours') .where('id', isEqualTo: bk.AvailabilityHoursID).get().then(
+<<<<<<< HEAD
                                                             (value) => value.docs.forEach((doc) { 
                                                                 doc.reference.update({'status': 0});
                                                                 //doc.reference.update({'status': -1});
@@ -100,6 +115,12 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
                   }).catchError((error){ 
                   });
   
+=======
+                                                            (value) => value.docs.forEach((doc) {
+                                                              doc.reference.update({'status':0});
+                                                            }));  
+                    
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
                   Navigator.pop(context, 'Cancel');
                   showAlert(context, "تم الغاء الموعد");
               },
@@ -144,6 +165,7 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
   void initState() {
     super.initState();
     getBookedAppointments();  
+<<<<<<< HEAD
     getStudentName();
   }
 
@@ -160,6 +182,11 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
         }
       }  
   }
+=======
+      
+  }
+
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -211,9 +238,13 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
                                    Spacer(),
                                     bkAppntmtn.status == 0 ? IconButton(onPressed: ()async{
                                       cancelConfirmation( context, bkAppntmtn);
+<<<<<<< HEAD
                                     }, icon: Icon(Icons.cancel,color: Colors.red,)) :Container(
                                                                                         child: Text("تم الغاء الموعد", style: TextStyle(color: const Color.fromARGB(255, 169, 19, 8),)),
                                                                                       ),//trashIcon for cancel appointment
+=======
+                                    }, icon: Icon(Icons.cancel,color: Colors.red,)) :Container(),//trashIcon for cancel appointment
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
 
                                       
                                   ],

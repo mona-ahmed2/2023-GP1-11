@@ -7,9 +7,14 @@ import 'package:wjjhni/Screens_to_be_implemented/ViewNoteScreen.dart';
 import '../model/AdvisorNote.dart';
 
 class AdvisorNotesList extends StatefulWidget { 
+<<<<<<< HEAD
   const AdvisorNotesList({super.key, required this.studentID, required this.advisorID, required this.studentName});
   final String studentID;
   final String studentName;
+=======
+  const AdvisorNotesList({super.key, required this.studentID, required this.advisorID});
+  final String studentID;
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
   final String advisorID;
   @override
   State<AdvisorNotesList> createState() => _advisorNotesListState();
@@ -109,7 +114,11 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+<<<<<<< HEAD
         title: Text("قائمة ملاحظات للطالبة/ "+ widget.studentName),
+=======
+        title: Text("قائمة الملاحظات"),
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
 
         centerTitle: true,
       ),
@@ -154,7 +163,11 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
                                                 child:
                                                   Column(
                                                       children: [
+<<<<<<< HEAD
                                                         //Center(child:  Text("الطالبه: "+_studName, style:TextStyle(fontWeight: FontWeight.bold) )), 
+=======
+                                                        Center(child:  Text("الطالبه: "+_studName, style:TextStyle(fontWeight: FontWeight.bold) )), 
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
                                                         /*Text(notesObj.note), */
                                                         Center(child:  Text("نوع الاستشارة: "+notesObj.category, )), 
                                                       ],

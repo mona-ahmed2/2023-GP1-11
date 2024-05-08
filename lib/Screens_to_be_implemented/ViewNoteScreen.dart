@@ -52,6 +52,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
         title: Text("تفاصيل الملاحظة"),
+<<<<<<< HEAD
         centerTitle: true, 
       ),
       body:Directionality(
@@ -93,6 +94,45 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
               ],
             ),
           )
+=======
+        centerTitle: true,
+      ),
+      body:Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [   
+            Text("الطالبة: ("+studentName+")", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),         
+            SizedBox(height: 16.0),
+
+            Text("كتبت بتاريخ: ("+widget.note.addedDate+")", style: TextStyle(fontSize: 12,),),         
+            SizedBox(height: 16.0),
+
+            Text("نوع الاستشارة: ("+widget.note.category+")", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),         
+            SizedBox(height: 16.0),
+          Container(  
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(240, 243, 242, 1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child:
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text( 
+                    widget.note.note,
+                    style: const TextStyle(
+                      fontSize: 14, 
+                      color: Color(0xFF1C1C1C),
+                      height: 1, 
+
+                    ),
+                  ),
+                )
+                   
+              ),
+          ],
+        ),
+>>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
       )
     );
   }
