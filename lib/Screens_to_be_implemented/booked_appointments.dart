@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
+
 import 'package:wjjhni/model/SpecificNote.dart';
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
 import '../model/BookAppointment.dart';
 
@@ -51,11 +50,11 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
     );
   }
 
-<<<<<<< HEAD
+
   cancelConfirmation(BuildContext context, BookAppointment bk, String studentName)   {
-=======
+
   cancelConfirmation(BuildContext context, BookAppointment bk)   {
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
     return showDialog<void>(
       context: context,
       barrierDismissible: true, // user must tap button!
@@ -64,13 +63,13 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
           title: const Text('تنبيه', textAlign: TextAlign.end,),
           content: SingleChildScrollView(
             child: ListBody(
-<<<<<<< HEAD
+
               children:  <Widget>[
                 Text("هل تريد حقا الغاء الموعد مع الطالبة/ "+studentName+"؟", textAlign: TextAlign.end,),
-=======
+
               children: const <Widget>[
                 Text('هل تريد حقا الغاء هذا الموعد؟', textAlign: TextAlign.end,),
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
               ],
             ),
           ),
@@ -84,11 +83,11 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
               child: const Text('لا'),
             ),
             TextButton(
-<<<<<<< HEAD
+
               onPressed: () async { 
-=======
+
               onPressed: () { 
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
                 db.collection('booking_appointment')
                     .where('id', isEqualTo: bk.id).get().then(
                                                             (value) => value.docs.forEach((doc) {
@@ -103,7 +102,7 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
                         .where('id', isEqualTo: bk.AvailabilityHoursID).get().then(
                           (value) => value.docs.forEach((doc) {
                               doc.reference.update({'status': 0});
-<<<<<<< HEAD
+
                               //doc.reference.update({'status': -1});
                             }
                         )); 
@@ -121,11 +120,11 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
                   }).catchError((error){ 
                   });
   
-=======
+
                             }
                         )); 
                     
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
                   Navigator.pop(context, 'Cancel');
                   showAlert(context, "تم الغاء الموعد");
               },
@@ -293,15 +292,15 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
 
                                    Spacer(),
                                     bkAppntmtn.status == 0 ? IconButton(onPressed: ()async{
-<<<<<<< HEAD
+
                                       cancelConfirmation( context, bkAppntmtn, _studName);
                                     }, icon: Icon(Icons.cancel,color: Colors.red,)) :Container(
                                                                                         child: Text("تم الغاء الموعد", style: TextStyle(color: const Color.fromARGB(255, 169, 19, 8),)),
                                                                                       ),//trashIcon for cancel appointment
-=======
+
                                       cancelConfirmation( context, bkAppntmtn);
                                     }, icon: Icon(Icons.cancel,color: Colors.red,)) :Container(),//trashIcon for cancel appointment
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
                                      /*
                                     bkAppntmtn.status == 0 ?  IconButton(onPressed: ()async{ 

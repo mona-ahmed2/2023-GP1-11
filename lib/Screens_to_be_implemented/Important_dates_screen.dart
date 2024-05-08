@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wjjhni/utils.dart';
 
-=======
+
 import 'package:flutter/material.dart';
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
 class ImportantDatesScreen extends StatefulWidget {
   const ImportantDatesScreen({super.key});
@@ -19,7 +19,7 @@ class ImportantDatesScreen extends StatefulWidget {
 }
 
 class _ImportantDatesScreenState extends State<ImportantDatesScreen> {
-<<<<<<< HEAD
+
     final db = FirebaseFirestore.instance;
     late final ValueNotifier<List<Event>> _selectedEvents;
     CalendarFormat _calendarFormat = CalendarFormat.week;
@@ -194,7 +194,7 @@ class _ImportantDatesScreenState extends State<ImportantDatesScreen> {
         )
       );
     } 
-=======
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,5 +206,5 @@ class _ImportantDatesScreenState extends State<ImportantDatesScreen> {
       body: Container(),
     );
   }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 }

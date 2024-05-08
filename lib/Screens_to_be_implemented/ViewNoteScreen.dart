@@ -52,7 +52,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
         title: Text("تفاصيل الملاحظة"),
-<<<<<<< HEAD
+
         centerTitle: true, 
       ),
       body:Directionality(
@@ -94,7 +94,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
               ],
             ),
           )
-=======
+
         centerTitle: true,
       ),
       body:Padding(
@@ -132,7 +132,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
               ),
           ],
         ),
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
       )
     );
   }

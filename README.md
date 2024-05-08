@@ -43,7 +43,7 @@ Introduction: In today's rapidly growing educational realm, academic advising is
     <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=firebase&theme=light" />  
   </a>
- </a>
+ <p>//
     <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=html,css,php&theme=light" />  
   </a>

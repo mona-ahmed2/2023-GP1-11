@@ -7,10 +7,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wjjhni/model/AvailabilityHours.dart';
 import 'package:wjjhni/model/BookAppointment.dart';
-<<<<<<< HEAD
+
 import 'package:wjjhni/model/SpecificNote.dart';
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
+
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 
 class BooKAppointment extends StatefulWidget {
@@ -27,11 +27,10 @@ class _BooKAppointmentState extends State<BooKAppointment> {
   late BookingService mockBookingService;
   String uid = FirebaseAuth.instance.currentUser!.uid;
   final db = FirebaseFirestore.instance;
-<<<<<<< HEAD
+
   String advName = "";
   String studentName = "";
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
   
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
@@ -64,7 +63,7 @@ submitBooking( String docID ,DateTimeRange e) async {
   final String? id = auth.currentUser?.uid;
   String appointmentID = FirebaseFirestore.instance.collection('booking_appointment').doc().id;
   BookAppointment bookAppt= BookAppointment(appointmentID, e.start.toString(), e.end.toString(), id!, widget.advisorUid, 0 , docID);
-<<<<<<< HEAD
+
 
   
   SpecificNote spNote_for_stud = SpecificNote("حجز موعد", "تم حجز موعد مع مرشدتك بنجاح", id);
@@ -79,8 +78,7 @@ submitBooking( String docID ,DateTimeRange e) async {
   }).catchError((error){ 
   });
 
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
   await FirebaseFirestore.instance.collection('booking_appointment').add(bookAppt.toJson()).then((result) {
 
   showAlert(context, "تم حجز الموعد");
@@ -157,7 +155,7 @@ confirmProcess(BuildContext context, String docID ,DateTimeRange e) {
           now.day,
           08,
         ));
-<<<<<<< HEAD
+
         getAdvisorName();
         getStudentName();
   }
@@ -184,8 +182,7 @@ void getAdvisorName() async {
           }); 
         }
       }  
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
   }
 
   Map<String, DateTimeRange>converted = HashMap(); 
@@ -244,11 +241,11 @@ void getAdvisorName() async {
       textDirection: TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
-<<<<<<< HEAD
+
           title: Text('حجز موعد - مرشدة/ '+advName),//Title
-=======
+
           title: const Text('حجز موعد (المواعيد المتاحة)'),//Title
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
           centerTitle: true,
           backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
         ),

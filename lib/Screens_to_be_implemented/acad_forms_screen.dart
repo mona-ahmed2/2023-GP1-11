@@ -27,7 +27,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) { 
-<<<<<<< HEAD
+
           return Directionality(textDirection: TextDirection.rtl,
             child: Dialog(
               // The background color
@@ -46,7 +46,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                 ),
               ),
             )
-=======
+
           return Dialog(
             // The background color
             backgroundColor: Colors.white,
@@ -63,7 +63,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                 ],
               ),
             ),
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
           );
         });
   }
@@ -75,7 +75,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
-<<<<<<< HEAD
+
         return Directionality(textDirection: TextDirection.rtl,
           child: AlertDialog(
             title: const Text('تنبيه', textAlign: TextAlign.end,),
@@ -116,7 +116,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
               ),
             ],
           )
-=======
+
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),
           content: SingleChildScrollView(
@@ -155,7 +155,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
               child: const Text('OK'),
             ),
           ],
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
         );
       },
     );

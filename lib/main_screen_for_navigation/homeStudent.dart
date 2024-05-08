@@ -15,11 +15,11 @@ class HomePageStu extends StatefulWidget {
 
 class _HomePageStuState extends State<HomePageStu> {
   int _selecetedIndex = 3;
-<<<<<<< HEAD
+
   final List<String> _titles = const ['المزيد', 'مرشدتي', 'أسأل', 'الرئيسية'];
-=======
+
   final List<String> _titles = const ['المزيد', 'مرشدتي', 'أسأل الشات بوت', 'الرئيسية'];
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
    List<Widget> _tabs =  [
     MoreScreen(isAdvisor: false,isStudent: true,),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-<<<<<<< HEAD
+
 class HomeWidget extends StatelessWidget {
   const HomeWidget({super.key});
 
@@ -57,7 +57,7 @@ class HomeWidget extends StatelessWidget {
      );
   }
 }
-=======
+
 import 'package:stacked_notification_cards/stacked_notification_cards.dart';
 import "package:wjjhni/notifictions/firebase_helper.dart";
 import 'package:wjjhni/notifictions/notification.dart';
@@ -391,4 +391,4 @@ List<NotificationCard> notificationCards3 =
     );
   }
 }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+

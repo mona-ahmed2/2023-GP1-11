@@ -59,7 +59,7 @@ class _RateScreenState extends State<RateScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
+
     return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
@@ -235,7 +235,7 @@ class _RateScreenState extends State<RateScreen> {
             ),
             
           )
-=======
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
@@ -406,7 +406,7 @@ class _RateScreenState extends State<RateScreen> {
         
       ),
       
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
     );
   }
 }

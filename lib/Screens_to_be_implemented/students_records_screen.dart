@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
+
 import 'package:string_validator/string_validator.dart';
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
+
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 import 'package:wjjhni/onlineChatting/chat_tile.dart';
 import '../widgets/note_title.dart'; 
@@ -14,14 +14,14 @@ String adv_uid = FirebaseAuth.instance.currentUser!.uid;
 final db = FirebaseFirestore.instance;
 ScrollController scrollController = ScrollController();
 List<String> names = [];
-<<<<<<< HEAD
+
 List<String> IDS = [];
 List<String> searchResultsNames = [];
 List<String> searchResultsIDs = []; 
 //function to get names from DB
   TextEditingController editingController = TextEditingController();
 
-=======
+
 List<String> searchResults = [];
 //function to get names from DB
 void getNames() async {
@@ -37,7 +37,7 @@ void getNames() async {
   }
   searchResults = names;
 }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
 
 class StudentsRecordsScreen extends StatefulWidget {
@@ -63,7 +63,7 @@ class _StudentsRecordsScreenState extends State<StudentsRecordsScreen> {
   }
   */
 
-<<<<<<< HEAD
+
   void filtersearchResultsNames(String query) {
     
     setState(() {
@@ -104,7 +104,7 @@ void getNames() async {
     
   });
 }
-=======
+
   TextEditingController editingController = TextEditingController();
 
   void filterSearchResults(String query) {
@@ -114,7 +114,7 @@ void getNames() async {
           .toList();
     });
   }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
   @override
   void initState() {
@@ -129,11 +129,11 @@ void getNames() async {
   Widget build(BuildContext context) {
     void onQueryChanged(String query) {
       setState(() {
-<<<<<<< HEAD
+
         searchResultsNames = names
-=======
+
         searchResults = names
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
             .where((item) => item.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }); 
@@ -155,11 +155,11 @@ void getNames() async {
                   padding: EdgeInsets.all(16),
                   child: TextField(
                     onChanged: (value) {
-<<<<<<< HEAD
+
                       filtersearchResultsNames(value);
-=======
+
                       filterSearchResults(value);
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
                       setState(() {
                         filteredName = value;
                       });
@@ -176,11 +176,11 @@ void getNames() async {
                       suffixIcon: IconButton(
                         icon: Icon(Icons.search),
                         onPressed: () {
-<<<<<<< HEAD
+
                           filtersearchResultsNames( filteredName );
-=======
+
                           filterSearchResults( filteredName );
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
                           print(names.length);
                         },
                       ),
@@ -198,10 +198,8 @@ void getNames() async {
 }
 
 class MessageStreamBuilder extends StatelessWidget {
-<<<<<<< HEAD
-  
-=======
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
+
   const MessageStreamBuilder({super.key});
 
 
@@ -234,7 +232,7 @@ class MessageStreamBuilder extends StatelessWidget {
             final name = student.get('name');
             final id = student.get('id'); 
             final stud_id = student.get('uid');
-<<<<<<< HEAD
+
             
              if(editingController.text == ""){
                 return  NoteTile(
@@ -247,10 +245,10 @@ class MessageStreamBuilder extends StatelessWidget {
                     ); 
              }else
             if (searchResultsNames.contains(name) || searchResultsIDs.contains(id)) {
-=======
+
 
             if (searchResults.contains(name)) {
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
               return  NoteTile(
                       name: name,
                       id: id,

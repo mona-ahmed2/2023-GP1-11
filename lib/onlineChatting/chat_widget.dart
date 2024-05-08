@@ -4,13 +4,13 @@ import 'package:wjjhni/onlineChatting/chat_tile.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-<<<<<<< HEAD
+
 import 'package:firebase_auth/firebase_auth.dart'; 
-=======
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:intl/intl.dart' as intl;
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
 String uid = FirebaseAuth.instance.currentUser!.uid;
 final db = FirebaseFirestore.instance;
@@ -23,7 +23,7 @@ void getNames() async {
       .collection("students")
       .where('AdvisorUID', isEqualTo: uid)
       .snapshots()) {
-<<<<<<< HEAD
+
     for (var student in snapshot.docs) {
       if (!name.contains(student.get("name"))) {
         names.add(student.get("name"));
@@ -31,7 +31,7 @@ void getNames() async {
     }
   }
   searchResults = names;
-=======
+
     names.clear();
     for (var student in snapshot.docs) {
       if (!names.contains(student.get("name"))) {
@@ -40,7 +40,7 @@ void getNames() async {
       }
     }
   }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 }
 
 class ChatWidget extends StatefulWidget {
@@ -51,7 +51,7 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-<<<<<<< HEAD
+
   void StudentsStream() async {
     setState(() async {
       await for (var snapshot in db
@@ -64,7 +64,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       }
     });
   }
-=======
+
   // void StudentsStream() async {
   //   setState(() async {
   //     await for (var snapshot in db
@@ -77,7 +77,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   //     }
   //   });
   // }
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
   TextEditingController editingController = TextEditingController();
 
@@ -145,16 +145,16 @@ class _ChatWidgetState extends State<ChatWidget> {
 }
 
 class MessageStreamBuilder extends StatelessWidget {
-<<<<<<< HEAD
+
   const MessageStreamBuilder({super.key});
-=======
+
   const MessageStreamBuilder({Key? key});
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-<<<<<<< HEAD
+
         stream: db
             .collection("students")
             .where('AdvisorUID', isEqualTo: uid)
@@ -222,7 +222,7 @@ class MessageStreamBuilder extends StatelessWidget {
 
 
 
-=======
+
       stream: db
           .collection("students")
           .where('AdvisorUID', isEqualTo: uid)
@@ -314,4 +314,4 @@ class MessageStreamBuilder extends StatelessWidget {
   }
 }
 
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+

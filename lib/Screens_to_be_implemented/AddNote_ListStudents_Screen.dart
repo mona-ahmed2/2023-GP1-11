@@ -27,11 +27,11 @@ void getNames() async {
       .where('AdvisorUID', isEqualTo: adv_uid)
       .snapshots()) {
     for (var student in snapshot.docs) {
-<<<<<<< HEAD
+
       if (!name.contains(student.get("name"))) {
-=======
+
       if (!names.contains(student.get("name"))) {
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
         names.add(student.get("name"));
       }
     }

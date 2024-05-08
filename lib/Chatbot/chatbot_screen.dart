@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-<<<<<<< HEAD
-import 'dart:math' as math;
-=======
 
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+import 'dart:math' as math;
+
+
+
 import 'package:wjjhni/Chatbot/message.dart';
 import 'package:wjjhni/Chatbot/chatbot_service.dart';
 
@@ -38,8 +38,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   ScrollController scrollController = ScrollController();
   List<Message> msgs = [];
   bool isTyping = false;
-<<<<<<< HEAD
-=======
+
+
 
 
 
@@ -53,28 +53,26 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 
   }
 
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
 /* -------------------------------------------------------------
 
 this method for sending question and receiving chatbot answer @ibtihalx
 -----------------------------------------------------------------*/
   void response(query) async {
-<<<<<<< HEAD
-=======
+
     setState(() {
       isTyping = true;
     });
 
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
     chat.createSession().then((value) => {
           chat.sendInput(query).then((response) => {
                 setState(() {
                   msgs.add(Message(
                       false, response?.output?.generic?[0].toJson()["text"]));
-<<<<<<< HEAD
-=======
+
                   isTyping = false;
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
                 })
               })
         });
@@ -86,7 +84,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
 --------------------------------------------*/
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
+
     
     return Column(
         children: [
@@ -200,7 +198,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
         ],
       );
     
-=======
+
     return Column(
       children: [
         Center(
@@ -337,7 +335,7 @@ this method for sending question and receiving chatbot answer @ibtihalx
         ),
       ],
     );
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
   }
 }
 
@@ -346,12 +344,12 @@ class BubbleNormal extends StatelessWidget {
   final bool isSender;
   final Color color;
 
-<<<<<<< HEAD
+
   const BubbleNormal({super.key,
-=======
+
   const BubbleNormal({
     super.key,
->>>>>>> c8b7ab0cc01ebb7471171d17c8100898c11a9ff8
+
     required this.text,
     required this.isSender,
     required this.color,
