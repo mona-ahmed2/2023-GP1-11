@@ -15,13 +15,9 @@ class HomePageStu extends StatefulWidget {
 
 class _HomePageStuState extends State<HomePageStu> {
   int _selecetedIndex = 3;
-
-  final List<String> _titles = const ['المزيد', 'مرشدتي', 'أسأل', 'الرئيسية'];
-
   final List<String> _titles = const ['المزيد', 'مرشدتي', 'أسأل الشات بوت', 'الرئيسية'];
 
-
-   List<Widget> _tabs =  [
+  List<Widget> _tabs =  [
     MoreScreen(isAdvisor: false,isStudent: true,),
     MyAdvisor(),
     ChatbotScreen() ,
@@ -32,15 +28,15 @@ class _HomePageStuState extends State<HomePageStu> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 231, 231, 231),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        title: Text(_titles[_selecetedIndex]),
-        centerTitle: true,
-        leading: IconButton(
+          backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+          title: Text(_titles[_selecetedIndex]),
+          centerTitle: true,
+          leading: IconButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut(); //logout
               },
               icon: const Icon(Icons.logout))
-        
+
       ),
       body: _tabs[_selecetedIndex],
       bottomNavigationBar: Container(
@@ -57,14 +53,14 @@ class _HomePageStuState extends State<HomePageStu> {
               });
             },
             gap: 16,
-            
+
             tabBackgroundColor: Color.fromARGB(255, 18, 164, 186)
                 .withOpacity(0.1), // selected tab background color
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             activeColor: const Color.fromRGBO(55, 94, 152, 1),
             // tabBorder: Border(top: BorderSide(color: Colors.black, width: 3.0)),
             // tabBorderRadius: 2,
-        
+
             iconSize: 24,
             backgroundColor: Color.fromRGBO(246, 247, 249, 1),
             tabs: [
@@ -87,7 +83,7 @@ class _HomePageStuState extends State<HomePageStu> {
               //   icon: Icons.calendar_month,
               //   text: "home",
               // ),
-        
+
               GButton(
                 icon: Icons.home,
                 text: "الرئيسية",

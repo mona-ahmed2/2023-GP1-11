@@ -43,14 +43,10 @@ class NoteTile extends StatelessWidget {
             MaterialPageRoute(builder: (context) => AddNoteScreen(otherUserUid:uid,isAdvisor: false,isStudent: true, studentName:name )),
           );
           */
-          
+
           Navigator.push(
             context,
-
             MaterialPageRoute(builder: (context) => AdvisorNotesList(studentID:uid, advisorID: advUID, studentName: name,)),
-
-            MaterialPageRoute(builder: (context) => AdvisorNotesList(studentID:uid, advisorID: advUID,)),
-
           );
         },
         tileColor: Colors.white,
@@ -72,7 +68,7 @@ class NoteTile extends StatelessWidget {
         trailing: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-       
+
             Text(
               time,
               style: const TextStyle(fontSize: 12),
@@ -82,9 +78,9 @@ class NoteTile extends StatelessWidget {
               color: Color.fromARGB(255, 17, 110, 187),
               size: 20,
             ),
-           
+
             // Spacer(),
-            
+
 
             // Add some spacing
           ],

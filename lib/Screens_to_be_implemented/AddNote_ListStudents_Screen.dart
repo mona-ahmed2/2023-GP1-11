@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../widgets/note_title.dart'; 
+import '../widgets/note_title.dart';
 
 String adv_uid = FirebaseAuth.instance.currentUser!.uid;
 final db = FirebaseFirestore.instance;
@@ -27,11 +27,7 @@ void getNames() async {
       .where('AdvisorUID', isEqualTo: adv_uid)
       .snapshots()) {
     for (var student in snapshot.docs) {
-
-      if (!name.contains(student.get("name"))) {
-
       if (!names.contains(student.get("name"))) {
-
         names.add(student.get("name"));
       }
     }
@@ -47,7 +43,7 @@ class AddNote_ListStudents_Screen extends StatefulWidget {
 }
 
 class _AddNote_ListStudents_Screen_State extends State<AddNote_ListStudents_Screen> {
-  String nameFilter = ""; 
+  String nameFilter = "";
   /*
   void StudentsStream() async {
     setState(() async {
@@ -85,55 +81,55 @@ class _AddNote_ListStudents_Screen_State extends State<AddNote_ListStudents_Scre
         searchResults = names
             .where((item) => item.toLowerCase().contains(query.toLowerCase()))
             .toList();
-      }); 
+      });
     }
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
-        title: Text("اضافة ملاحظة"),
-        centerTitle: true,
-      ),
-      body:
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
+          title: Text("اضافة ملاحظة"),
+          centerTitle: true,
+        ),
+        body:
         Directionality(
-        textDirection: TextDirection.rtl,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: TextField(
-                    onChanged: (value) {
-                      filterSearchResults(value);
-                      setState(() {
-                        nameFilter = value;
-                      });
-                      print(value);
-                    },
-                    controller: editingController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'بحث بالاسم',
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16.0))),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: () {
-                          filterSearchResults(nameFilter);
-                          print(names.length);
-                        },
+          textDirection: TextDirection.rtl,
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: TextField(
+                      onChanged: (value) {
+                        filterSearchResults(value);
+                        setState(() {
+                          nameFilter = value;
+                        });
+                        print(value);
+                      },
+                      controller: editingController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'بحث بالاسم',
+                        border: OutlineInputBorder(
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(16.0))),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () {
+                            filterSearchResults(nameFilter);
+                            print(names.length);
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                MessageStreamBuilder(),
-              ],
+                  MessageStreamBuilder(),
+                ],
+              ),
             ),
           ),
-        ),
-      )
+        )
     );
   }
 }
@@ -159,14 +155,14 @@ class MessageStreamBuilder extends StatelessWidget {
           }
 
           final students = snapshot.data!.docs;
-          
+
           // .where((student) => searchResults.contains(student.get('name')));
 
-          for (var student in students) { 
+          for (var student in students) {
             final name = student.get('name');
             final id = student.get('id');
             final stud_uid = student.get('uid');
-            
+
 
             final noteTile = NoteTile(
               name: name,
@@ -191,6 +187,6 @@ class MessageStreamBuilder extends StatelessWidget {
           );
         });
   }
- 
+
 }
 

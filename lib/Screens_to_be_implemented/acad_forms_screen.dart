@@ -19,149 +19,89 @@ class AcadFormsScreen extends StatefulWidget {
 class _AcadFormsScreenstate extends State<AcadFormsScreen> {
   String uid = FirebaseAuth.instance.currentUser!.uid;
   final db = FirebaseFirestore.instance;
-  
-  List<AcademicForm> formsList = [];  
-  
+
+  List<AcademicForm> formsList = [];
+
   showLoadingDialog(BuildContext context, String msg) async {
     showDialog(
         barrierDismissible: false,
         context: context,
-        builder: (BuildContext context) { 
-
+        builder: (BuildContext context) {
           return Directionality(textDirection: TextDirection.rtl,
-            child: Dialog(
-              // The background color
-              backgroundColor: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(msg)
-                  ],
-                ),
-              ),
-            )
-
-          return Dialog(
-            // The background color
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(
-                    height: 15,
+              child: Dialog(
+                // The background color
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Text(msg)
+                    ],
                   ),
-                  Text(msg)
-                ],
-              ),
-            ),
-
+                ),
+              )
           );
         });
   }
- 
- 
-      
+
+
+
   showAlert(BuildContext context , String msg, bool isSuccess) {
     return showDialog<void>(
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
-
         return Directionality(textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            title: const Text('تنبيه', textAlign: TextAlign.end,),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        isSuccess ? Icons.check_circle : Icons.cancel,
-                        color: isSuccess ? Colors.green : Colors.red,
-                      ),
-                    SizedBox(  
-                        width: MediaQuery.of(context).size.width * 0.60,
-                        height: 60,
-                        child:
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, right: 8),
-                          child:   
-                            Text(
-                            msg ,
-                              style: const TextStyle(  color: Colors.black87, fontSize: 16), 
-                              softWrap: false,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,  
-                            ),
-                        )
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: const Text('OK'),
-              ),
-            ],
-          )
-
-        return AlertDialog(
-          title: const Text('تنبيه', textAlign: TextAlign.end,),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Row(
+            child: AlertDialog(
+              title: const Text('تنبيه', textAlign: TextAlign.end,),
+              content: SingleChildScrollView(
+                child: ListBody(
                   children: <Widget>[
-                    Icon(
-                      isSuccess ? Icons.check_circle : Icons.cancel,
-                      color: isSuccess ? Colors.green : Colors.red,
-                    ),
-                   SizedBox(  
-                      width: MediaQuery.of(context).size.width * 0.60,
-                      height: 60,
-                      child:
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, right: 8),
-                        child:   
-                          Text(
-                           msg ,
-                            style: const TextStyle(  color: Colors.black87, fontSize: 16), 
-                            softWrap: false,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,  
-                          ),
-                      )
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          isSuccess ? Icons.check_circle : Icons.cancel,
+                          color: isSuccess ? Colors.green : Colors.red,
+                        ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            height: 60,
+                            child:
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0, right: 8),
+                              child:
+                              Text(
+                                msg ,
+                                style: const TextStyle(  color: Colors.black87, fontSize: 16),
+                                softWrap: false,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                        ),
+                      ],
                     ),
                   ],
                 ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('OK'),
+                ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('OK'),
-            ),
-          ],
-
+            )
         );
       },
     );
   }
 
-  
+
   void requestStoragePermission() async {
     PermissionStatus status = await Permission.storage.request();
     if (status.isGranted) {
@@ -205,17 +145,17 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
     }
   }
 
-  Future<dynamic>? getAcademicForms() async { 
+  Future<dynamic>? getAcademicForms() async {
     formsList.clear();
     final snapshot = await db //getting from the firebase database
         .collection('academic_forms').get().then((value) {
-            for (var item in value.docs) { 
-                setState(() {
-                    formsList.add(AcademicForm(item["id"],item["name"],item["file_url"],));
-                    
-                }); 
-            }
-          }); 
+      for (var item in value.docs) {
+        setState(() {
+          formsList.add(AcademicForm(item["id"],item["name"],item["file_url"],));
+
+        });
+      }
+    });
     return snapshot;
   }
 
@@ -224,8 +164,8 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
   void initState() {
     super.initState();
     requestStoragePermission();
-    getAcademicForms();  
-      
+    getAcademicForms();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -234,54 +174,54 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1),
         title: Text("النماذج الأكاديمية"),
         centerTitle: true,
-      ), 
+      ),
       body:Directionality(
-          textDirection: TextDirection.rtl,
-          child: formsList.length == 0?
-                Container():
-                ListView.builder( 
-                        itemCount: formsList.length,
-                        itemBuilder: (context, index) 
-                        { 
-                          AcademicForm formObj = formsList[index];  
-                          return Container(
-                            margin: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.black12,
-                              border: Border.all(color:const Color.fromRGBO(55, 94, 152, 1) ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: 20,),
-                                    Text("نموذج: "+ formObj.name), 
-                                     
-                                    Spacer(),
-                                  
-                                    IconButton(onPressed: ()async{ 
-                                        showLoadingDialog(context, "بدء التحميل");
-                                        final response = await http.get(Uri.parse(formObj.file_url));  
-                                        final directory = await getDownloadsDirectory();
-                                        final filePath = "${directory!.path}/"+formObj.name+".pdf";
-                                        final file = File(filePath);
+        textDirection: TextDirection.rtl,
+        child: formsList.length == 0?
+        Container():
+        ListView.builder(
+            itemCount: formsList.length,
+            itemBuilder: (context, index)
+            {
+              AcademicForm formObj = formsList[index];
+              return Container(
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  border: Border.all(color:const Color.fromRGBO(55, 94, 152, 1) ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 20,),
+                        Text("نموذج: "+ formObj.name),
 
-                                        final downloadTask =   await file.writeAsBytes(response.bodyBytes); 
-                                        
-                                        Navigator.pop(context);
-                                        showAlert(context, "تم التحميل", true);
-                                    }, icon: Icon(Icons.download,color: Colors.blue,)),//trashIcon for confirm
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                   
-                        }
-                      ),
-                  ),
+                        Spacer(),
+
+                        IconButton(onPressed: ()async{
+                          showLoadingDialog(context, "بدء التحميل");
+                          final response = await http.get(Uri.parse(formObj.file_url));
+                          final directory = await getDownloadsDirectory();
+                          final filePath = "${directory!.path}/"+formObj.name+".pdf";
+                          final file = File(filePath);
+
+                          final downloadTask =   await file.writeAsBytes(response.bodyBytes);
+
+                          Navigator.pop(context);
+                          showAlert(context, "تم التحميل", true);
+                        }, icon: Icon(Icons.download,color: Colors.blue,)),//trashIcon for confirm
+                      ],
+                    )
+                  ],
+                ),
+              );
+
+            }
+        ),
+      ),
     );
   }
 }

@@ -1,63 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-class HomeWidget extends StatelessWidget {
-  const HomeWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(textDirection: TextDirection.rtl,
-     child:  SafeArea(
-       child:  Padding(
-         padding: const EdgeInsets.all(8.0),
-         child: Column(children: [
-            SvgPicture.asset(
-                'assets/undraw_develop_app_re_bi4i.svg',
-                width: MediaQuery.of(context).size.width,
-                height: 0.5* MediaQuery.of(context).size.height,
-                fit: BoxFit.fill,
-              ),
-               SizedBox(
-                height: 0.05* MediaQuery.of(context).size.height,
-              ),
-             Container(
-            width: MediaQuery.of(context).size.width,
-               child: Card(
-                 child: Column(
-                   children:[
-                    const Text(
-                        "\nأهلاً بك في تطبيق وجهنَي ",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          height: 1.15,
-                          color: Color.fromRGBO(55, 94, 152, 1),
-                        ),
-                      ),
-                     
-               const Text("\n الإرشاد الأكاديمي بين يديك \n ",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            height: 1.15,
-                            color: Color.fromRGBO(156, 180, 204, 1),
-                          ),),
-                   ], 
-                 ),
-               ),
-             ),
-             
-            
-         ],
-         ),
-       ),
-     ),
-     );
-  }
-}
-
 import 'package:stacked_notification_cards/stacked_notification_cards.dart';
 import "package:wjjhni/notifictions/firebase_helper.dart";
 import 'package:wjjhni/notifictions/notification.dart';
@@ -145,10 +87,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     //get general notifivations
     print("Loading notifications...");
     List<CustomeNotification> notifications =
-        await _firebaseService.fetchGeneralNotifications();
+    await _firebaseService.fetchGeneralNotifications();
     print("Notifications loaded: $notifications");
     List<CustomNotificationCard> notificationCards =
-        notifications.map((notification) {
+    notifications.map((notification) {
       return CustomNotificationCard(
         date: notification.date,
         leading: Icon(
@@ -163,10 +105,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     }).toList();
 
     List<CustomeNotification> notifications2 =
-        await _firebaseService.fetchSpeNotifications();
+    await _firebaseService.fetchSpeNotifications();
 
     List<CustomNotificationCard> notificationCards2 =
-        notifications2.map((notification2) {
+    notifications2.map((notification2) {
       return CustomNotificationCard(
         date: notification2.date,
         leading: Icon(
@@ -181,10 +123,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     }).toList();
 
     List<CustomeNotification> notifications3 =
-        await _firebaseService.fetchMessageNotifications();
+    await _firebaseService.fetchMessageNotifications();
 
     List<CustomNotificationCard> notificationCards3 =
-        notifications3.map((notification3) {
+    notifications3.map((notification3) {
       return CustomNotificationCard(
         date: notification3.date,
         leading: Icon(
@@ -208,7 +150,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     List<NotificationCard> notificationCards =
-        _listGeneralOfNotification.map((customNotificationCard) {
+    _listGeneralOfNotification.map((customNotificationCard) {
       return NotificationCard(
         date: customNotificationCard.date,
         leading: customNotificationCard.leading,
@@ -218,7 +160,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     }).toList();
 
     List<NotificationCard> notificationCards2 =
-        _listSpecificfNotification.map((customNotificationCard) {
+    _listSpecificfNotification.map((customNotificationCard) {
       return NotificationCard(
         date: customNotificationCard.date,
         leading: customNotificationCard.leading,
@@ -227,8 +169,8 @@ class _HomeWidgetState extends State<HomeWidget> {
       );
     }).toList();
 
-List<NotificationCard> notificationCards3 =
-        _listMessageNotification.map((customNotificationCard) {
+    List<NotificationCard> notificationCards3 =
+    _listMessageNotification.map((customNotificationCard) {
       return NotificationCard(
         date: customNotificationCard.date,
         leading: customNotificationCard.leading,
@@ -391,4 +333,3 @@ List<NotificationCard> notificationCards3 =
     );
   }
 }
-
