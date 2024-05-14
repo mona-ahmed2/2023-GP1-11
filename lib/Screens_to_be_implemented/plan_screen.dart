@@ -60,35 +60,38 @@ class _PlanScreenState extends State<PlanScreen> {
         centerTitle: true,
         shadowColor:Colors.black ,
       ),
-      body: Container(
-        child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child:
-            Padding(
-              padding: const EdgeInsets.only(top:20.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(226, 233, 230, 1),
-                    borderRadius: BorderRadius.circular(20),
-                  ) ,
-                  child: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child:GridView(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1,
-                          mainAxisSpacing: 5,
-                        ),
-                        shrinkWrap: true,
-                        children: List.generate(plansList.length, (index) {
-                          Plan pln = plansList[index];
-                          return PlanWidget(plan: pln,);
-                        }),
-                      )
-                  )
-              ),
-            )
+      body: SafeArea(
+        right: true,
+        child: Container(
+          child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child:
+              Padding(
+                padding: const EdgeInsets.only(top:20.0),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(226, 233, 230, 1),
+                      borderRadius: BorderRadius.circular(20),
+                    ) ,
+                    child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child:GridView(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 5,
+                          ),
+                          shrinkWrap: true,
+                          children: List.generate(plansList.length, (index) {
+                            Plan pln = plansList[index];
+                            return PlanWidget(plan: pln,);
+                          }),
+                        )
+                    )
+                ),
+              )
+          ),
         ),
       ),
     );
