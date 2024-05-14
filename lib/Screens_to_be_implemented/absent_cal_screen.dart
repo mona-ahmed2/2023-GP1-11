@@ -83,13 +83,17 @@ class _AbsentCalState extends State<AbsentCal> {
                     onPressed: () async{
                       String noHoursWeek = no_hours_week.text;
                       String noStudyWeeks = no_study_week.text;
+                      if(noStudyWeeks == "" && noHoursWeek ==""){
+                        showAlert(context, "يجب ادخال قيم داخل الحقول");
+                        return ;
+                      }
                       if(noStudyWeeks == ""){
-                        showAlert(context, "يجب ادخال عدد الساعات الفعلية للمقرر خلال الأسبوع الواحد");
+                        showAlert(context, "يجب ادخال عدد الأسابيع الدراسية خلال الفصل الدراسي");
                         return ;
                       }
 
                       if(noHoursWeek ==""){
-                        showAlert(context, "يجب ادخال عدد الاسابيع الدراسية خلال الفصل الدراسي");
+                        showAlert(context, "يجب ادخال عدد الساعات الفعلية للمقرر خلال الأسبوع الواحد");
                         return ;
                       }
                       setState(() {
