@@ -58,7 +58,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
       builder: (BuildContext context) {
         return Directionality(textDirection: TextDirection.rtl,
             child: AlertDialog(
-              title: const Text('تنبيه', textAlign: TextAlign.end,),
+              title: const Text('تنبيه', textAlign: TextAlign.right,),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -106,24 +106,30 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
     PermissionStatus status = await Permission.storage.request();//permission request
     if (status.isGranted) {
       // تم منح الصلاحية بنجاح
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('تم منح الصلاحية'),
-            content: Text('لقد تم منح صلاحية استخدام ذاكرة التخزين بنجاح.'),
-            actions: [
-              TextButton(
-                child: Text('موافق'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+          return Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: Text('تم منح الصلاحية'),
+                content: Text('لقد تم منح صلاحية استخدام ذاكرة التخزين بنجاح.'),
+                actions: [
+                  TextButton(
+                    child: Text('موافق'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
           );
         },
       );
     } else {
+      openAppSettings();
+      /*
       // الصلاحية لم تتم منحها
       showDialog(
         context: context,
@@ -141,7 +147,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
             ],
           );
         },
-      );
+      );*/
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 
-DateTime dateTime = DateTime.now(); 
+DateTime dateTime = DateTime.now(); /////حقي
  
 
 class AcadmicRate {
