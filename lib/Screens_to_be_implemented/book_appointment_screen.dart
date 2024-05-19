@@ -30,7 +30,7 @@ class _BooKAppointmentState extends State<BooKAppointment> {
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),
@@ -95,7 +95,7 @@ class _BooKAppointmentState extends State<BooKAppointment> {
   confirmProcess(BuildContext context, String docID ,DateTimeRange e) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),

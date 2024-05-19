@@ -46,7 +46,7 @@ class NoteTile extends StatelessWidget {
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AdvisorNotesList(studentID:uid, advisorID: advUID, studentName: name,)),
+            MaterialPageRoute(builder: (context) => AdvisorNotesList(studentID:uid, advisorID: advUID, studentName: name,)),//advisornoteslist
           );
         },
         tileColor: Colors.white,

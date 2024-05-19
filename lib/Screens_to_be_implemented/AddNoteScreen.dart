@@ -31,10 +31,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   String studentNumber = "";
   final db = FirebaseFirestore.instance;
 
-  String selectedCategory = "استشارة أكاديمية";
+  String selectedCategory = "استشارة أكاديمية";//defult
   TextEditingController noteController = TextEditingController();
 
-  List<String> categories = [ ];
+  List<String> categories = [ ];//List of categories for dropdown menu
   @override
   void initState() {
     // TODO: implement initState
@@ -59,7 +59,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   }
 
 
-  Future<String>? getStudentInfo(String studID) async{
+  Future<String>? getStudentInfo(String studID) async{//fetche student number from the database
     String studentNumber = "";
     await db
         .collection('students')
@@ -72,10 +72,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   }
 
 
-  showAlert(BuildContext context, String msg) {
+  showAlert(BuildContext context, String msg) {//message
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true, // user must tap button
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),
@@ -154,7 +154,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      ElevatedButton(
+                      ElevatedButton(//submit and add to the Firestore
                         onPressed: () async{
                           String category = selectedCategory ?? '';
                           String note = noteController.text;

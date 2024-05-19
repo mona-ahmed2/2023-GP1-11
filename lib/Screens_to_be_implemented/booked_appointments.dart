@@ -25,7 +25,7 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title:  Text('تنبيه', textAlign: TextAlign.end,),
@@ -51,7 +51,7 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
   cancelConfirmation(BuildContext context, BookAppointment bk, String studentName)   {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),
@@ -180,7 +180,7 @@ class _BookedAppointmentsState extends State<BookedAppointments> {
   Future<dynamic>? getBookedAppointments() async {
     converted.clear();
     booksList.clear();
-    final snapshot = await db //getting from the firebase database
+    final snapshot = await db
         .collection('booking_appointment')
         .where('advisorID', isEqualTo: uid).get().then((value) {
       for (var item in value.docs) {

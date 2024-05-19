@@ -43,7 +43,7 @@ class AddNote_ListStudents_Screen extends StatefulWidget {
 }
 
 class _AddNote_ListStudents_Screen_State extends State<AddNote_ListStudents_Screen> {
-  String nameFilter = "";
+  String nameFilter = "";//filter student names
   /*
   void StudentsStream() async {
     setState(() async {
@@ -58,9 +58,9 @@ class _AddNote_ListStudents_Screen_State extends State<AddNote_ListStudents_Scre
     });
   }*/
 
-  TextEditingController editingController = TextEditingController();
+  TextEditingController editingController = TextEditingController();// retrieve the current value text
 
-  void filterSearchResults(String query) {
+  void filterSearchResults(String query) {//filter names based on the query
     setState(() {
       searchResults = names
           .where((item) => item.toLowerCase().contains(query.toLowerCase()))

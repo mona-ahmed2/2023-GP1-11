@@ -23,7 +23,7 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title:  Text('تنبيه', textAlign: TextAlign.end,),
@@ -116,7 +116,7 @@ class _BookedAppointmentsState extends State<StudBookedAppointments> {
   Future<dynamic>? getBookedAppointments() async {
     converted.clear();
     booksList.clear();
-    final snapshot = await db //getting from the firebase database
+    final snapshot = await db
         .collection('booking_appointment')
         .where('studentID', isEqualTo: uid).get().then((value) {
       for (var item in value.docs) {

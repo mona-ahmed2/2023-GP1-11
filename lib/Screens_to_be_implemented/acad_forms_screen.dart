@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io';// for file handling
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,10 +20,10 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
   String uid = FirebaseAuth.instance.currentUser!.uid;
   final db = FirebaseFirestore.instance;
 
-  List<AcademicForm> formsList = [];
+  List<AcademicForm> formsList = [];// list for storing AcademicForm
 
   showLoadingDialog(BuildContext context, String msg) async {
-    showDialog(
+    showDialog(//loading dialog
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
@@ -36,7 +36,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(),//loading
                       const SizedBox(
                         height: 15,
                       ),
@@ -51,10 +51,10 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
 
 
 
-  showAlert(BuildContext context , String msg, bool isSuccess) {
+  showAlert(BuildContext context , String msg, bool isSuccess) {//dialog with success or error
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true, // user must tap button
       builder: (BuildContext context) {
         return Directionality(textDirection: TextDirection.rtl,
             child: AlertDialog(
@@ -103,7 +103,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
 
 
   void requestStoragePermission() async {
-    PermissionStatus status = await Permission.storage.request();
+    PermissionStatus status = await Permission.storage.request();//permission request
     if (status.isGranted) {
       // تم منح الصلاحية بنجاح
       showDialog(
@@ -193,7 +193,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                 ),
                 child: Column(
                   children: [
-                    Row(
+                    Row(//forms
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(width: 20,),
@@ -203,16 +203,16 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
 
                         IconButton(onPressed: ()async{
                           showLoadingDialog(context, "بدء التحميل");
-                          final response = await http.get(Uri.parse(formObj.file_url));
+                          final response = await http.get(Uri.parse(formObj.file_url));//http
                           final directory = await getDownloadsDirectory();
-                          final filePath = "${directory!.path}/"+formObj.name+".pdf";
+                          final filePath = "${directory!.path}/"+formObj.name+".pdf";//the path of the file
                           final file = File(filePath);
 
                           final downloadTask =   await file.writeAsBytes(response.bodyBytes);
 
                           Navigator.pop(context);
                           showAlert(context, "تم التحميل", true);
-                        }, icon: Icon(Icons.download,color: Colors.blue,)),//trashIcon for confirm
+                        }, icon: Icon(Icons.download,color: Colors.blue,)),
                       ],
                     )
                   ],

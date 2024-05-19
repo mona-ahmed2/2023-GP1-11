@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wjjhni/model/AdvisorNote.dart';
 
-class ViewNoteScreen extends StatefulWidget {
+class ViewNoteScreen extends StatefulWidget {// takes a required note to display its details
   const ViewNoteScreen(
       {Key? key,
         required this.note})
@@ -31,7 +31,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
     super.initState();
   }
 
-  Future<void>? getStudentInfo(String studID) async{
+  Future<void>? getStudentInfo(String studID) async{//fetches student info
     await db
         .collection('students')
         .where('uid', isEqualTo: widget.note.studentID).get().then((value) {
@@ -47,7 +47,7 @@ class _ViewNoteScreenState extends State<ViewNoteScreen> {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {//display the note with its details
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(55, 94, 152, 1),

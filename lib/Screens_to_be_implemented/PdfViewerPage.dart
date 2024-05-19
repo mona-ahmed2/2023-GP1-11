@@ -28,7 +28,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
     }); 
 
     print (url);
-    //url = 'https://drive.google.com/file/d/1WYVgBlpavkd3OPtINn4BYbjJZ3ViA_pG/view?usp=drive_link';
+
     final response = await http.get(Uri.parse(url));   
     final directory = await getDownloadsDirectory();
     final filePath = "${directory!.path}/output.pdf";
@@ -71,11 +71,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                   SfPdfViewer.file(  Pfile,
                   //widget.crsPln.url,
                 ),
-                /*
-                  SfPdfViewer.network(  "https://faculty.ksu.edu.sa/sites/default/files/ObjectOrientedProgramminginC4thEdition.pdf",
-                  //widget.crsPln.url,
-                ),
-                */
+
               ),
             ),
     );

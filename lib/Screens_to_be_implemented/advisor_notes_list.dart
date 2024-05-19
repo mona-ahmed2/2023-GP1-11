@@ -28,7 +28,7 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true, // user must tap button
       builder: (BuildContext context) {
         return AlertDialog(
           title:  Text('تنبيه', textAlign: TextAlign.end,),
@@ -113,7 +113,7 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
 
         centerTitle: true,
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(//Navigates to AddNoteScreen
         backgroundColor: const Color.fromRGBO(55, 94, 152, 1.0),
         tooltip: 'اضافة ملاحظة',
         onPressed: (){
@@ -126,7 +126,7 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
       ),
       body:Directionality(
         textDirection: TextDirection.rtl,
-        child: notesList.length == 0?
+        child: notesList.length == 0?//display the notes
         Container():
         ListView.builder(
             itemCount: notesList.length,
@@ -172,7 +172,7 @@ class _advisorNotesListState extends State<AdvisorNotesList> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ViewNoteScreen(note:notesObj,)),
-                      );
+                      );// navigates to ViewNoteScreen when clicked
                     },
                     ),
 

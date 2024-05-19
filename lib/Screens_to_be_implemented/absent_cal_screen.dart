@@ -15,7 +15,7 @@ class _AbsentCalState extends State<AbsentCal> {
   showAlert(BuildContext context, String msg) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('تنبيه', textAlign: TextAlign.end,),
