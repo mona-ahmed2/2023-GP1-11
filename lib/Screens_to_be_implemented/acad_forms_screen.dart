@@ -54,7 +54,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
   showAlert(BuildContext context , String msg, bool isSuccess) {//dialog with success or error
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return Directionality(textDirection: TextDirection.rtl,
             child: AlertDialog(
@@ -199,7 +199,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
                 ),
                 child: Column(
                   children: [
-                    Row(//forms
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(width: 20,),
@@ -218,7 +218,7 @@ class _AcadFormsScreenstate extends State<AcadFormsScreen> {
 
                           Navigator.pop(context);
                           showAlert(context, "تم التحميل", true);
-                        }, icon: Icon(Icons.download,color: Colors.blue,)),
+                        }, icon: Icon(Icons.download,color: Colors.blue,)),//trashIcon for confirm
                       ],
                     )
                   ],

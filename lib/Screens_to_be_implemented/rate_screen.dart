@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wjjhni/model/AcadmicRate.dart';
 import 'package:wjjhni/widgets/RatingDialog.dart';
 import 'package:wjjhni/widgets/starWidget.dart';
-//حقي
+
 class RateScreen extends StatefulWidget {
   final String advisorUid ;
   const RateScreen({super.key, required this.advisorUid});
