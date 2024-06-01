@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:wjjhni/onlineChatting/chat_dialouge_screen.dart';
 import 'package:wjjhni/onlineChatting/chat_tile.dart';
 
@@ -17,7 +18,7 @@ List<String> searchResults = [];
 void getNames() async {
   await for (var snapshot in db
       .collection("students")
-      .where('AdvisorUID', isEqualTo: uid)
+      .where('AdvisorUID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots()) {
     names.clear();
     for (var student in snapshot.docs) {
@@ -123,7 +124,7 @@ class MessageStreamBuilder extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
       stream: db
           .collection("students")
-          .where('AdvisorUID', isEqualTo: uid)
+          .where('AdvisorUID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {

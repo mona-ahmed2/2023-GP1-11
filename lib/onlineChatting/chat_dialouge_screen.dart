@@ -125,6 +125,7 @@ class _ChatDialougeState extends State<ChatDialouge> {
       _firestore
           .collection('chat')
           .where('stu_uid', isEqualTo: uid)
+          
           .get()
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((doc) {
@@ -548,6 +549,7 @@ class MessageStreamBuilder extends StatelessWidget {
       stream: _firestore
           .collection("chat")
           .where("stu_uid", isEqualTo: stuUID)
+          .where("adv_uid", isEqualTo: advUID)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
